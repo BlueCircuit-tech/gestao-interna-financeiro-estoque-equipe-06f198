@@ -1035,6 +1035,252 @@
   </script>
 </section>
 
+    <section data-tela="trocar-plantao" class="hidden">
+  <div class="animate-fadeIn">
+    <div class="px-5 pt-5 pb-3">
+      <h1 class="font-display text-2xl font-bold text-gray-900">Trocar Plantão</h1>
+      <p class="text-sm text-gray-500 mt-0.5">Gerencie trocas e acompanhe solicitações</p>
+      <button onclick="mostrarTela('notificacoes')" class="relative mt-3 p-2 rounded-xl bg-gray-100 hover:bg-gray-200 transition-colors active:scale-95">
+        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+      </button>
+    </div>
+
+    <div class="px-5 mb-4">
+      <div class="flex bg-gray-100 rounded-xl p-1">
+        <button onclick="trocar_plantao_ativarAba('trocas')" id="aba-trocas" class="flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 bg-marca-500 text-white shadow-sm">Oferecer Troca</button>
+        <button onclick="trocar_plantao_ativarAba('minhas')" id="aba-minhas" class="flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 text-gray-500 hover:text-gray-700 relative">
+          Minhas Trocas
+          <span id="badge-minhas" class="absolute -top-1 -right-1 w-5 h-5 bg-amber-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">2</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="painel-trocas" class="px-5 space-y-3 pb-6">
+      <p class="text-xs text-gray-400 font-medium uppercase tracking-wider mb-3">Próximos plantões — toque em "Oferecer"</p>
+      <div id="lista-plantoes" class="space-y-3"></div>
+    </div>
+
+    <div id="painel-minhas" class="hidden px-5 space-y-3 pb-6">
+      <p class="text-xs text-gray-400 font-medium uppercase tracking-wider mb-3">Solicitações enviadas e recebidas</p>
+      <div id="lista-trocas" class="space-y-3"></div>
+      <button onclick="trocar_plantao_mostrarHistorico()" class="w-full py-3 mt-2 text-sm font-semibold text-marca-600 bg-marca-50 rounded-xl hover:bg-marca-100 transition-colors active:scale-95">
+        Ver Histórico dos Últimos 30 Dias
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  const PLANTOES = [
+    { id:1, data:'2026-01-22', dia:'Qui', hora:'07:00 — 19:00', tipo:'Diurno', local:'Hospital Santa Clara', esp:'Clínica Médica', ofertado:false },
+    { id:2, data:'2026-01-24', dia:'Sáb', hora:'19:00 — 07:00', tipo:'Noturno', local:'Hospital Santa Clara', esp:'Emergência', ofertado:false },
+    { id:3, data:'2026-01-27', dia:'Ter', hora:'07:00 — 13:00', tipo:'Manhã', local:'UPA Centro', esp:'Pediatria', ofertado:false },
+    { id:4, data:'2026-01-29', dia:'Qui', hora:'13:00 — 19:00', tipo:'Tarde', local:'Hospital Santa Clara', esp:'UTI', ofertado:false },
+    { id:5, data:'2026-01-31', dia:'Sáb', hora:'07:00 — 19:00', tipo:'Diurno', local:'UPA Centro', esp:'Clínica Médica', ofertado:false },
+    { id:6, data:'2026-02-02', dia:'Seg', hora:'19:00 — 07:00', tipo:'Noturno', local:'Hospital Santa Clara', esp:'Emergência', ofertado:false },
+  ];
+
+  const COLEGAS = [
+    { id:101, nome:'Dra. Ana Beatriz', cargo:'Médica', esp:'Clínica Médica', ini:'AB', cor:'bg-teal-500', disp:true },
+    { id:102, nome:'Enf. Carlos Mendes', cargo:'Enfermeiro', esp:'Emergência', ini:'CM', cor:'bg-blue-500', disp:true },
+    { id:103, nome:'Téc. Fernanda Lima', cargo:'Téc. Enfermagem', esp:'UTI', ini:'FL', cor:'bg-amber-500', disp:true },
+    { id:104, nome:'Dr. Ricardo Souza', cargo:'Médico', esp:'Pediatria', ini:'RS', cor:'bg-purple-500', disp:true },
+    { id:105, nome:'Enf. Juliana Rocha', cargo:'Enfermeira', esp:'Clínica Médica', ini:'JR', cor:'bg-rose-500', disp:false },
+    { id:106, nome:'Téc. Bruno Alves', cargo:'Téc. Enfermagem', esp:'Emergência', ini:'BA', cor:'bg-cyan-500', disp:true },
+    { id:107, nome:'Dra. Camila Torres', cargo:'Médica', esp:'UTI', ini:'CT', cor:'bg-indigo-500', disp:false },
+  ];
+
+  let TROCAS = [
+    { id:1, plantaoId:1, de:'Dr. Lucas', para:'Dra. Ana Beatriz', status:'pendente', data:'2026-01-20', tipo:'recebida' },
+    { id:2, plantaoId:3, de:'Enf. Carlos Mendes', para:'Você', status:'pendente', data:'2026-01-21', tipo:'recebida' },
+    { id:3, plantaoId:5, de:'Você', para:'Téc. Fernanda Lima', status:'aceita', data:'2026-01-18', tipo:'enviada' },
+  ];
+
+  let HISTORICO = [
+    { id:1, plantaoId:5, de:'Você', para:'Téc. Fernanda Lima', status:'aceita', data:'2026-01-18' },
+    { id:2, plantaoId:7, de:'Dr. Ricardo Souza', para:'Você', status:'recusada', data:'2026-01-10' },
+    { id:3, plantaoId:2, de:'Você', para:'Enf. Juliana Rocha', status:'aceita', data:'2026-01-05' },
+    { id:4, plantaoId:9, de:'Dra. Camila Torres', para:'Você', status:'recusada', data:'2025-12-28' },
+    { id:5, plantaoId:4, de:'Você', para:'Dr. Ricardo Souza', status:'aceita', data:'2025-12-20' },
+    { id:6, plantaoId:6, de:'Enf. Carlos Mendes', para:'Você', status:'recusada', data:'2025-12-15' },
+    { id:7, plantaoId:8, de:'Você', para:'Téc. Bruno Alves', status:'aceita', data:'2025-12-08' },
+  ];
+
+  let plantaoSelecionado = null;
+
+  const TIPO_BG = { 'Diurno':'bg-sky-100 text-sky-700','Noturno':'bg-indigo-100 text-indigo-700','Manhã':'bg-amber-100 text-amber-700','Tarde':'bg-orange-100 text-orange-700' };
+  const STATUS_CFG = {
+    pendente: { bg:'bg-amber-100', text:'text-amber-700', label:'Pendente', dot:'bg-amber-400' },
+    aceita:   { bg:'bg-emerald-100', text:'text-emerald-700', label:'Aceita', dot:'bg-emerald-400' },
+    recusada: { bg:'bg-red-100', text:'text-red-700', label:'Recusada', dot:'bg-red-400' },
+  };
+
+  function trocar_plantao_ativarAba(aba) {
+    const pt = document.getElementById('painel-trocas');
+    const pm = document.getElementById('painel-minhas');
+    const at = document.getElementById('aba-trocas');
+    const am = document.getElementById('aba-minhas');
+    if (aba === 'trocas') {
+      pt.classList.remove('hidden'); pm.classList.add('hidden');
+      at.className = 'flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 bg-marca-500 text-white shadow-sm';
+      am.className = 'flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 text-gray-500 hover:text-gray-700 relative';
+    } else {
+      pm.classList.remove('hidden'); pt.classList.add('hidden');
+      am.className = 'flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 bg-marca-500 text-white shadow-sm';
+      at.className = 'flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 text-gray-500 hover:text-gray-700';
+      trocar_plantao_renderTrocas();
+    }
+  }
+
+  function trocar_plantao_renderPlantoes() {
+    const el = document.getElementById('lista-plantoes');
+    if (!el) return;
+    if (PLANTOES.length === 0) {
+      el.innerHTML = `<div class="text-center py-10"><div class="text-4xl mb-3">📋</div><p class="text-sm text-gray-500">Nenhum plantão cadastrado</p></div>`;
+      return;
+    }
+    el.innerHTML = PLANTOES.map(p => {
+      const td = new Date(p.data + 'T00:00:00');
+      const diaNum = td.getDate();
+      const mes = td.toLocaleString('pt-BR',{month:'short'}).replace('.','');
+      return `<div class="card p-4 transition-all duration-200 active:scale-[0.98]">
+        <div class="flex items-start gap-3">
+          <div class="w-14 h-14 rounded-xl bg-marca-50 flex flex-col items-center justify-center shrink-0">
+            <span class="text-[10px] font-bold text-marca-600 uppercase">${p.dia}</span>
+            <span class="text-xl font-display font-bold text-marca-700 leading-none">${String(diaNum).padStart(2,'0')}</span>
+            <span class="text-[9px] text-marca-500 capitalize">${mes}</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-display font-bold text-sm text-gray-900 truncate">${p.local}</h3>
+            </div>
+            <p class="text-xs text-gray-500 mb-1">${p.esp}</p>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xs font-medium text-gray-700">${p.hora}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full font-semibold ${TIPO_BG[p.tipo]||'bg-gray-100 text-gray-600'}">${p.tipo}</span>
+            </div>
+            <button onclick="trocar_plantao_abrirModal(${p.id})" class="btn w-full py-2 text-sm font-semibold bg-marca-500 text-white rounded-lg hover:bg-marca-600 active:scale-95 transition-all">Oferecer Troca</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function trocar_plantao_renderTrocas() {
+    const el = document.getElementById('lista-trocas');
+    if (!el) return;
+    if (TROCAS.length === 0) {
+      el.innerHTML = `<div class="text-center py-10"><div class="text-4xl mb-3">🤝</div><p class="text-sm text-gray-500">Nenhuma troca solicitada</p></div>`;
+      return;
+    }
+    el.innerHTML = TROCAS.map(t => {
+      const cfg = STATUS_CFG[t.status];
+      const acaoLabel = t.tipo === 'enviada' ? 'Para' : 'De';
+      return `<div class="card p-4 transition-all duration-200 active:scale-[0.98]">
+        <div class="flex items-center gap-3">
+          <div class="w-2 h-10 rounded-full ${cfg.dot} shrink-0"></div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-0.5">
+              <span class="text-sm font-semibold text-gray-900">${t.tipo==='enviada'?t.para:t.de}</span>
+            </div>
+            <p class="text-xs text-gray-500">${t.tipo==='enviada'?'Você ofereceu':'Solicitaram troca'} para <span class="font-medium text-gray-700">${t.tipo==='enviada'?t.para:t.de}</span></p>
+            <p class="text-[11px] text-gray-400 mt-1">${dataBR(t.data)}</p>
+          </div>
+          <span class="px-3 py-1 rounded-full text-xs font-bold ${cfg.bg} ${cfg.text} shrink-0">${cfg.label}</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function trocar_plantao_abrirModal(plantaoId) {
+    plantaoSelecionado = PLANTOES.find(p => p.id === plantaoId);
+    if (!plantaoSelecionado) return;
+    const disp = COLEGAS.filter(c => c.disp);
+    const html = disp.length === 0
+      ? '<p class="text-center text-gray-500 py-6 text-sm">Nenhum colega disponível para este turno.</p>'
+      : `<div class="space-y-2.5">${disp.map(c => `
+        <button onclick="trocar_plantao_solicitar(${c.id})" class="w-full flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-marca-50 transition-colors text-left active:scale-[0.98]">
+          <div class="w-10 h-10 rounded-full ${c.cor} flex items-center justify-center text-white text-sm font-bold shrink-0">${c.ini}</div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-gray-900">${c.nome}</p>
+            <p class="text-xs text-gray-500">${c.cargo} · ${c.esp}</p>
+          </div>
+          <span class="flex items-center gap-1 text-xs font-medium text-emerald-600 shrink-0">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Disponível
+          </span>
+        </button>`).join('')}</div>`;
+    abrirModal(html, 'Selecionar Profissional');
+  }
+
+  function trocar_plantao_solicitar(colId) {
+    const col = COLEGAS.find(c => c.id === colId);
+    if (!col || !plantaoSelecionado) return;
+    fecharModal();
+    const t = {
+      id: Date.now(), plantaoId: plantaoSelecionado.id,
+      de:'Você', para: col.nome, status:'pendente',
+      data: new Date().toISOString().split('T')[0], tipo:'enviada'
+    };
+    TROCAS.unshift(t);
+    const p = PLANTOES.find(x => x.id === plantaoSelecionado.id);
+    if (p) p.ofertado = true;
+    trocar_plantao_renderPlantoes();
+    trocar_plantao_atualizarBadge();
+    setTimeout(() => toast(`Solicitação enviada a ${col.nome} via push e WhatsApp`, 'ok'), 300);
+  }
+
+  function trocar_plantao_atualizarBadge() {
+    const pendentes = TROCAS.filter(t => t.status === 'pendente').length;
+    const badge = document.getElementById('badge-minhas');
+    if (badge) {
+      badge.textContent = pendentes;
+      badge.classList.toggle('hidden', pendentes === 0);
+    }
+  }
+
+  function trocar_plantao_mostrarHistorico() {
+    const html = HISTORICO.length === 0
+      ? '<p class="text-center text-gray-500 py-6 text-sm">Nenhuma troca nos últimos 30 dias.</p>'
+      : `<div class="space-y-2.5">${HISTORICO.map(h => {
+        const cfg = STATUS_CFG[h.status];
+        return `<div class="flex items-center gap-3 p-3 rounded-xl bg-gray-50">
+          <div class="w-2 h-10 rounded-full ${cfg.dot} shrink-0"></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-gray-800">${h.de} ↔ ${h.para}</p>
+            <p class="text-[11px] text-gray-400">${dataBR(h.data)}</p>
+          </div>
+          <span class="px-3 py-1 rounded-full text-[11px] font-bold ${cfg.bg} ${cfg.text} shrink-0">${cfg.label}</span>
+        </div>`;
+      }).join('')}</div>`;
+    abrirModal(html, 'Histórico — Últimos 30 Dias');
+  }
+
+  function trocar_plantao_aceitar(trocaId) {
+    const t = TROCAS.find(x => x.id === trocaId);
+    if (t) { t.status = 'aceita'; trocar_plantao_renderTrocas(); trocar_plantao_atualizarBadge(); toast('Troca aceita com sucesso!','ok'); }
+  }
+  function trocar_plantao_recusar(trocaId) {
+    const t = TROCAS.find(x => x.id === trocaId);
+    if (t) { t.status = 'recusada'; trocar_plantao_renderTrocas(); trocar_plantao_atualizarBadge(); toast('Troca recusada','info'); }
+  }
+
+  window.trocar_plantao_ativarAba = trocar_plantao_ativarAba;
+  window.trocar_plantao_abrirModal = trocar_plantao_abrirModal;
+  window.trocar_plantao_solicitar = trocar_plantao_solicitar;
+  window.trocar_plantao_aceitar = trocar_plantao_aceitar;
+  window.trocar_plantao_recusar = trocar_plantao_recusar;
+  window.trocar_plantao_mostrarHistorico = trocar_plantao_mostrarHistorico;
+  window.trocar_plantao_renderPlantoes = trocar_plantao_renderPlantoes;
+  window.trocar_plantao_renderTrocas = trocar_plantao_renderTrocas;
+  window.trocar_plantao_atualizarBadge = trocar_plantao_atualizarBadge;
+
+  if (document.getElementById('lista-plantoes')) trocar_plantao_renderPlantoes();
+  trocar_plantao_atualizarBadge();
+})();
+</script>
+
     <!-- TELAS -->
   </main>
 
