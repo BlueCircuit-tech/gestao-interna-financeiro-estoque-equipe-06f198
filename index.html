@@ -2795,6 +2795,482 @@ if (typeof mostrarTela === 'function') {
 })();
 </script>
 
+    <section data-tela="chat-equipe" class="hidden">
+      <div id="chat-lista-view" class="flex flex-col h-[calc(100vh-4rem)]">
+        <!-- Cabeçalho da lista de conversas -->
+        <div class="px-4 pt-3 pb-2 bg-white border-b border-gray-100">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <h1 class="font-display text-xl font-bold text-gray-900">Chat da Equipe</h1>
+              <p class="text-xs text-gray-500 mt-0.5">5 conversas não lidas</p>
+            </div>
+            <button onclick="mostrarTela('notificacoes')" class="relative p-2 rounded-full hover:bg-gray-100 active:scale-95 transition-all">
+              <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+              <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+            </button>
+          </div>
+          <!-- Busca -->
+          <div class="relative">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input id="chat-busca-input" type="text" placeholder="Buscar conversa ou mensagem..." oninput="chat_equipe_buscar(this.value)" class="w-full pl-9 pr-4 py-2.5 bg-gray-100 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-marca-500 focus:bg-white transition-all font-body">
+          </div>
+        </div>
+        <!-- Lista de conversas -->
+        <div id="chat-lista-conversas" class="flex-1 overflow-y-auto">
+        </div>
+        <div id="chat-lista-vazia" class="hidden flex-1 flex flex-col items-center justify-center px-8 py-12">
+          <svg class="w-16 h-16 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          <p class="text-gray-500 text-sm text-center">Nenhuma conversa encontrada</p>
+          <p class="text-gray-400 text-xs text-center mt-1">Tente outro termo de busca</p>
+        </div>
+      </div>
+
+      <!-- VIEW: Conversa individual -->
+      <div id="chat-detalhe-view" class="hidden flex flex-col h-[calc(100vh-4rem)]">
+        <!-- Cabeçalho do chat -->
+        <div class="bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3">
+          <button onclick="chat_equipe_voltarLista()" class="p-1 -ml-1 rounded-full hover:bg-gray-100 active:scale-95 transition-all flex-shrink-0">
+            <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+          </button>
+          <div id="chat-detalhe-avatar" class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"></div>
+          <div class="flex-1 min-w-0">
+            <h2 id="chat-detalhe-nome" class="font-display font-bold text-sm text-gray-900 truncate"></h2>
+            <p id="chat-detalhe-status" class="text-xs text-green-600"></p>
+          </div>
+          <button class="p-2 rounded-full hover:bg-gray-100 active:scale-95 transition-all">
+            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+          </button>
+        </div>
+        <!-- Mensagens -->
+        <div id="chat-mensagens-container" class="flex-1 overflow-y-auto bg-gray-50 px-4 py-3">
+        </div>
+        <!-- Digitando indicador -->
+        <div id="chat-digitando-indicator" class="hidden px-4 py-1.5 bg-gray-50">
+          <div class="flex items-center gap-2">
+            <div class="flex gap-0.5">
+              <span class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay:0ms"></span>
+              <span class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay:150ms"></span>
+              <span class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay:300ms"></span>
+            </div>
+            <span id="chat-digitando-nome" class="text-xs text-gray-500"></span>
+          </div>
+        </div>
+        <!-- Anexos preview -->
+        <div id="chat-anexos-preview" class="hidden bg-white border-t border-gray-100 px-4 py-2">
+          <div id="chat-anexos-lista" class="flex gap-2 overflow-x-auto"></div>
+        </div>
+        <!-- Input de mensagem -->
+        <div class="bg-white border-t border-gray-100 px-3 py-2.5">
+          <div class="flex items-end gap-2">
+            <button onclick="chat_equipe_abrirAnexo()" class="p-2 rounded-full hover:bg-gray-100 active:scale-95 transition-all flex-shrink-0 mb-0.5">
+              <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 000 2.828 2 2 0 002.828 0L20 9.828a4 4 0 00-5.656-5.656l-3.172 3.172m0 0L4 4m4.343 5.657L4 4"/></svg>
+            </button>
+            <div class="flex-1 relative">
+              <input id="chat-input-mensagem" type="text" placeholder="Digite uma mensagem..." onkeydown="chat_equipe_enviarTecla(event)" class="w-full px-4 py-2.5 bg-gray-100 rounded-full text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-marca-500 focus:bg-white transition-all font-body pr-10">
+              <button class="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-200 active:scale-95 transition-all">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </button>
+            </div>
+            <button onclick="chat_equipe_enviarMensagem()" class="p-2.5 bg-marca-600 hover:bg-marca-700 active:scale-95 rounded-full transition-all flex-shrink-0 mb-0.5">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- MODAL ANEXO -->
+      <div id="modal-anexo-chat" class="hidden fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
+        <div class="bg-white rounded-t-2xl w-full max-w-[430px] p-4 pb-8">
+          <div class="w-10 h-1 bg-gray-300 rounded-full mx-auto mb-4"></div>
+          <h3 class="font-display font-bold text-base text-gray-900 text-center mb-4">Anexar</h3>
+          <div class="grid grid-cols-2 gap-3">
+            <button onclick="chat_equipe_anexarFoto()" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-gray-50 hover:bg-gray-100 active:scale-95 transition-all">
+              <svg class="w-8 h-8 text-marca-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <span class="text-xs font-medium text-gray-700">Galeria</span>
+            </button>
+            <button onclick="chat_equipe_anexarCamera()" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-gray-50 hover:bg-gray-100 active:scale-95 transition-all">
+              <svg class="w-8 h-8 text-marca-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <span class="text-xs font-medium text-gray-700">Câmera</span>
+            </button>
+            <button onclick="chat_equipe_anexarPDF()" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-gray-50 hover:bg-gray-100 active:scale-95 transition-all">
+              <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              <span class="text-xs font-medium text-gray-700">Documento PDF</span>
+            </button>
+            <button onclick="chat_equipe_anexarLocalizacao()" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-gray-50 hover:bg-gray-100 active:scale-95 transition-all">
+              <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243A8 8 0 1117.657 16.657z"/><circle cx="10" cy="11" r="1.5" fill="currentColor"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11l2-2"/></svg>
+              <span class="text-xs font-medium text-gray-700">Localização</span>
+            </button>
+          </div>
+          <button onclick="chat_equipe_fecharAnexo()" class="w-full mt-4 py-2.5 text-sm text-gray-500 hover:text-gray-700 font-medium">Cancelar</button>
+        </div>
+      </div>
+
+      <script>
+      var chat_equipe_conversas = [
+        { id: 1, tipo: 'suporte', nome: 'Suporte BlueCircuit', avatarCor: 'bg-blue-600', fixo: true, naoLidas: 1, digitando: false, mensagens: [
+          { id: 1, texto: 'Olá! Bem-vindo ao Suporte BlueCircuit. Como podemos ajudar você hoje?', hora: '09:00', enviada: false, entregue: true, lida: true, anexo: null },
+          { id: 2, texto: 'Oi, estou com dificuldade para acessar a escala de plantão deste mês.', hora: '09:03', enviada: true, entregue: true, lida: true, anexo: null },
+          { id: 3, texto: 'Entendi! Você está logado com o usuário de profissional, correto? Vamos verificar suas permissões de acesso.', hora: '09:05', enviada: false, entregue: true, lida: true, anexo: null },
+          { id: 4, texto: 'Sim, sou a enfermeira Carla. O painel aparece em branco quando clico em Escala Mensal.', hora: '09:06', enviada: true, entregue: true, lida: true, anexo: null },
+          { id: 5, texto: 'Identificamos o problema! Era um bug na sincronização com a unidade Santa Clara. Já corrigimos e a escala já está disponível para visualização. Por favor, recarregue a tela.', hora: '09:12', enviada: false, entregue: true, lida: true, anexo: null },
+          { id: 6, texto: 'Perfeito, já apareceu! Obrigada pelo suporte rápido.', hora: '09:14', enviada: true, entregue: true, lida: false, anexo: null },
+        ]},
+        { id: 2, tipo: 'grupo', nome: 'Hospital Santa Clara — Equipe Plantão', avatarCor: 'bg-teal-600', fixo: false, naoLidas: 12, digitando: true, digitandoNome: 'Dr. Roberto', membros: 8, mensagens: [
+          { id: 1, texto: 'Bom dia equipe! Lembrete: escala de semana que vem já está publicada.', hora: '07:30', enviada: false, entregue: true, lida: true, anexo: null },
+          { id: 2, texto: 'Bom dia! Alguém pode trocar comigo o plantão de sexta à noite? Preciso de um horário especial.', hora: '07:45', enviada: true, entregue: true, lida: true, anexo: null },
+          { id: 3, texto: 'Eu posso pegar o seu turno de sexta! Qual o horário exato?', hora: '07:50', enviada: false, entregue: true, lida: true, anexo: { tipo: 'imagem', nome: 'planta_santa_clara.jpg', desc: 'Planta baixa do 3º andar — setor emergência' } },
+          { id: 4, texto: 'Das 18h às 06h. Ótimo, já solicito a troca pelo app!', hora: '07:52', enviada: true, entregue: true, lida: false, anexo: null },
+          { id: 5, texto: 'Enfermeiro Lucas, o relatório mensal de medicamentos está disponível para revisão.', hora: '08:15', enviada: false, entregue: true, lida: false, anexo: { tipo: 'pdf', nome: 'relatorio_medicamentos_janeiro.pdf', desc: 'Relatório mensal — Janeiro 2026' } },
+        ]},
+        { id: 3, tipo: 'grupo', nome: 'UBS Jardim América — Plantão', avatarCor: 'bg-emerald-600', fixo: false, naoLidas: 3, digitando: false, mensagens: [
+          { id: 1, texto: 'Atenção: mudança de sala de espera temporária até sexta-feira.', hora: 'Ontem', enviada: false, entregue: true, lida: true, anexo: null },
+          { id: 2, texto: 'Compartilhando a foto da nova disposição das cadeiras e dos avisos.', hora: 'Ontem', enviada: true, entregue: true, lida: true, anexo: { tipo: 'imagem', nome: 'sala_espera_reformada.jpg', desc: 'Nova sala de espera — UBS Jardim América' } },
+          { id: 3, texto: 'Perfeito! Já atualizei a escala de atendimento conforme a nova sala.', hora: 'Ontem', enviada: false, entregue: true, lida: true, anexo: null },
+          { id: 4, texto: 'Confirmado. Alguém vai precisar de ajuda amanhã cedo? Estarei disponível.', hora: '08:10', enviada: true, entregue: true, lida: false, anexo: null },
+        ]},
+        { id: 4, tipo: 'direto', nome: 'Dr. Roberto Mendes', avatarCor: 'bg-indigo-600', iniciais: 'RM', fixo: false, naoLidas: 0, digitando: false, online: true, mensagens: [
+          { id: 1, texto: 'Dr. Roberto, preciso confirmar o plantão do dia 28, você está disponível?', hora: 'Seg', enviada: true, entregue: true, lida: true, anexo: null },
+          { id: 2, texto: 'Sim, estou livre no dia 28. Pode me atribuir.', hora: 'Seg', enviada: false, entregue: true, lida: true, anexo: null },
+          { id: 3, texto: 'Ótimo! Já confirmei sua participação na escala.', hora: 'Seg', enviada: true, entregue: true, lida: true, anexo: null },
+          { id: 4, texto: 'A propósito, você viu o documento de protocolo de emergência atualizado? Está circulando no grupo.', hora: 'Ter', enviada: false, entregue: true, lida: true, anexo: { tipo: 'pdf', nome: 'protocolo_emergencia_2026.pdf', desc: 'Protocolo atualizado — Janeiro 2026' } },
+        ]},
+        { id: 5, tipo: 'direto', nome: 'Enf. Patrícia Lima', avatarCor: 'bg-pink-600', iniciais: 'PL', fixo: false, naoLidas: 0, digitando: false, mensagens: [
+          { id: 1, texto: 'Oi Patrícia! Vamos coordenar as trocas de plantão desta semana?', hora: 'Sex', enviada: true, entregue: true, lida: true, anexo: null },
+          { id: 2, texto: 'Claro! Eu preciso trocar o plantão de sábado à tarde.', hora: 'Sex', enviada: false, entregue: true, lida: true, anexo: null },
+          { id: 3, texto: 'Certo, já enviei a solicitação pelo app. Quando for aprovada, te aviso.', hora: 'Sex', enviada: true, entregue: true, lida: true, anexo: null },
+        ]},
+        { id: 6, tipo: 'grupo', nome: 'Clínica São Lucas — Administrativo', avatarCor: 'bg-amber-600', fixo: false, naoLidas: 1, digitando: false, mensagens: [
+          { id: 1, texto: 'Bom dia! Relatório financeiro do mês já está disponível.', hora: 'Ontem', enviada: false, entregue: true, lida: true, anexo: { tipo: 'pdf', nome: 'relatorio_financeiro_dez.pdf', desc: 'Relatório financeiro — Dezembro 2025' } },
+          { id: 2, texto: 'Obrigado! Vou revisar e enviar minhas observações.', hora: 'Ontem', enviada: true, entregue: true, lida: true, anexo: null },
+          { id: 3, texto: 'Lembrete: reunião de equipe na quinta-feira às 14h.', hora: 'Ontem', enviada: false, entregue: true, lida: true, anexo: null },
+          { id: 4, texto: 'Enviando a minuta da pauta da reunião.', hora: 'Ontem', enviada: false, entregue: true, lida: false, anexo: { tipo: 'pdf', nome: 'pauta_reuniao_09jan.pdf', desc: 'Pauta — Reunião de equipe 09/01' } },
+        ]},
+        { id: 7, tipo: 'direto', nome: 'Téc. Ana Beatriz', avatarCor: 'bg-cyan-600', iniciais: 'AB', fixo: false, naoLidas: 0, digitando: false, online: true, mensagens: [
+          { id: 1, texto: 'Ana, o equipamento de enfermaria do 2º andar está funcionando?', hora: 'Ter', enviada: true, entregue: true, lida: true, anexo: null },
+          { id: 2, texto: 'Sim, está tudo certo. Fiz a manutenção ontem.', hora: 'Ter', enviada: false, entregue: true, lida: true, anexo: null },
+        ]},
+        { id: 8, tipo: 'direto', nome: 'Dr. Fernando Almeida', avatarCor: 'bg-slate-600', iniciais: 'FA', fixo: false, naoLidas: 0, digitando: false, mensagens: [
+          { id: 1, texto: 'Dr. Fernando, preciso de um atestado médico para um paciente da UBS.', hora: 'Seg', enviada: true, entregue: true, lida: true, anexo: null },
+          { id: 2, texto: 'Sem problema, já estou enviando. O paciente já foi atendido hoje?', hora: 'Seg', enviada: false, entregue: true, lida: true, anexo: null },
+          { id: 3, texto: 'Sim, atendimento foi às 10h. O nome é Maria Silva.', hora: 'Seg', enviada: true, entregue: true, lida: true, anexo: null },
+          { id: 4, texto: 'Enviado! O atestado está disponível para download.', hora: 'Seg', enviada: false, entregue: true, lida: true, anexo: { tipo: 'pdf', nome: 'atestado_maria_silva.pdf', desc: 'Atestado médico — 06/01/2026' } },
+        ]},
+      ];
+
+      var chat_equipe_chatAtual = null;
+      var chat_equipe_anexosSelecionados = [];
+
+      function chat_equipe_renderLista() {
+        var container = document.getElementById('chat-lista-conversas');
+        var html = '';
+
+        var ordenadas = chat_equipe_conversas.slice().sort(function(a, b) {
+          var aTemMsg = a.mensagens.length > 0;
+          var bTemMsg = b.mensagens.length > 0;
+          if (a.fixo && !b.fixo) return -1;
+          if (!a.fixo && b.fixo) return 1;
+          var aUltima = aTemMsg ? a.mensagens[a.mensagens.length - 1].hora : '';
+          var bUltima = bTemMsg ? b.mensagens[b.mensagens.length - 1].hora : '';
+          if (aUltima > bUltima) return -1;
+          if (aUltima < bUltima) return 1;
+          return 0;
+        });
+
+        ordenadas.forEach(function(conv) {
+          var ultima = conv.mensagens.length > 0 ? conv.mensagens[conv.mensagens.length - 1] : null;
+          var ultimaMsg = ultima ? ultima.texto.substring(0, 48) + (ultima.texto.length > 48 ? '...' : '') : 'Sem mensagens';
+          if (ultima && ultima.anexo) {
+            ultimaMsg = '📎 ' + ultima.anexo.nome;
+          }
+          var hora = ultima ? ultima.hora : '';
+          var naoLidasBadge = conv.naoLidas > 0 ? '<span class="bg-marca-600 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0">' + conv.naoLidas + '</span>' : '';
+
+          var digitandoHtml = conv.digitando ? '<p class="text-[11px] text-marca-600 italic mt-0.5">digitando...</p>' : '';
+
+          var avatarHtml = '';
+          if (conv.tipo === 'grupo') {
+            avatarHtml = '<div class="' + conv.avatarCor + ' w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"><svg class="w-6 h-6 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>';
+          } else {
+            avatarHtml = '<div class="' + conv.avatarCor + ' w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">' + (conv.iniciais || conv.nome.split(' ').map(function(w){return w[0]}).join('').substring(0,2).toUpperCase()) + '</div>';
+          }
+
+          html += '<div onclick="chat_equipe_abrirChat(' + conv.id + ')" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 active:bg-gray-100 cursor-pointer transition-all border-b border-gray-50 ' + (conv.naoLidas > 0 ? 'bg-marca-50/30' : '') + '">';
+          html += avatarHtml;
+          html += '<div class="flex-1 min-w-0">';
+          html += '<div class="flex items-center justify-between">';
+          html += '<span class="font-display font-bold text-sm text-gray-900 truncate">' + conv.nome + '</span>';
+          html += '<span class="text-[11px] text-gray-400 flex-shrink-0 ml-2">' + hora + '</span>';
+          html += '</div>';
+          html += '<div class="flex items-center justify-between mt-1">';
+          html += '<p class="text-xs text-gray-500 truncate pr-2">' + ultimaMsg + '</p>';
+          html += naoLidasBadge;
+          html += '</div>';
+          html += digitandoHtml;
+          html += '</div>';
+          html += '</div>';
+        });
+
+        container.innerHTML = html;
+      }
+
+      function chat_equipe_abrirChat(id) {
+        var conv = chat_equipe_conversas.find(function(c) { return c.id === id; });
+        if (!conv) return;
+        chat_equipe_chatAtual = conv;
+        conv.naoLidas = 0;
+        chat_equipe_renderLista();
+        chat_equipe_anexosSelecionados = [];
+
+        document.getElementById('chat-lista-view').classList.add('hidden');
+        document.getElementById('chat-detalhe-view').classList.remove('hidden');
+
+        var avatarEl = document.getElementById('chat-detalhe-avatar');
+        avatarEl.className = 'w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 ' + conv.avatarCor;
+        if (conv.tipo === 'grupo') {
+          avatarEl.innerHTML = '<svg class="w-5 h-5 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>';
+        } else {
+          avatarEl.textContent = conv.iniciais || conv.nome.split(' ').map(function(w){return w[0]}).join('').substring(0,2).toUpperCase();
+        }
+        document.getElementById('chat-detalhe-nome').textContent = conv.nome;
+        document.getElementById('chat-detalhe-status').innerHTML = conv.online
+          ? '<span class="inline-block w-1.5 h-1.5 bg-green-500 rounded-full mr-1"></span>Online'
+          : '<span class="inline-block w-1.5 h-1.5 bg-gray-400 rounded-full mr-1"></span>Visto por último hoje';
+
+        document.getElementById('chat-digitando-nome').textContent = conv.digitando ? conv.digitandoNome + ' está digitando...' : '';
+
+        chat_equipe_renderMensagens();
+        document.getElementById('chat-input-mensagem').value = '';
+        chat_equipe_anexosSelecionados = [];
+        document.getElementById('chat-anexos-preview').classList.add('hidden');
+      }
+
+      function chat_equipe_renderMensagens() {
+        var container = document.getElementById('chat-mensagens-container');
+        if (!chat_equipe_chatAtual) return;
+        var html = '';
+        var ultimaData = '';
+
+        chat_equipe_chatAtual.mensagens.forEach(function(msg) {
+          html += '<div class="flex ' + (msg.enviada ? 'justify-end' : 'justify-start') + ' mb-2">';
+          html += '<div class="max-w-[80%] ' + (msg.enviada ? 'bg-marca-600 text-white rounded-2xl rounded-br-sm' : 'bg-white text-gray-800 rounded-2xl rounded-bl-sm shadow-sm border border-gray-100') + ' px-3.5 py-2.5">';
+
+          if (msg.anexo) {
+            if (msg.anexo.tipo === 'imagem') {
+              html += '<div class="rounded-lg overflow-hidden mb-1.5">';
+              html += '<div class="bg-gradient-to-br from-marca-100 to-marca-200 h-36 flex items-center justify-center">';
+              html += '<svg class="w-10 h-10 text-marca-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>';
+              html += '</div>';
+              html += '<p class="text-[10px] mt-1 ' + (msg.enviada ? 'text-white/80' : 'text-gray-500') + '">' + msg.anexo.nome + '</p>';
+              html += '<p class="text-[10px] ' + (msg.enviada ? 'text-white/60' : 'text-gray-400') + '">' + msg.anexo.desc + '</p>';
+              html += '</div>';
+            } else if (msg.anexo.tipo === 'pdf') {
+              html += '<div class="flex items-center gap-2.5 rounded-lg ' + (msg.enviada ? 'bg-white/15' : 'bg-gray-50') + ' p-2.5 mb-1.5">';
+              html += '<div class="w-10 h-12 bg-red-500 rounded flex items-center justify-center flex-shrink-0">';
+              html += '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>';
+              html += '</div>';
+              html += '<div class="min-w-0">';
+              html += '<p class="text-xs font-semibold ' + (msg.enviada ? 'text-white' : 'text-gray-800') + ' truncate">' + msg.anexo.nome + '</p>';
+              html += '<p class="text-[10px] ' + (msg.enviada ? 'text-white/70' : 'text-gray-400') + '">' + msg.anexo.desc + '</p>';
+              html += '</div>';
+              html += '</div>';
+            }
+          }
+
+          if (msg.texto) {
+            html += '<p class="text-sm leading-relaxed">' + msg.texto + '</p>';
+          }
+
+          html += '<div class="flex items-center justify-end gap-1 mt-1">';
+          html += '<span class="text-[10px] ' + (msg.enviada ? 'text-white/60' : 'text-gray-400') + '">' + msg.hora + '</span>';
+          if (msg.enviada) {
+            if (msg.entregue && msg.lida) {
+              html += '<svg class="w-3.5 h-3.5 text-blue-300" fill="currentColor" viewBox="0 0 24 24"><path d="M18 7l-1.41-1.41-6.34 6.34 1.41 1.41L18 7zm4.24-1.41L11.66 16.17 7.48 12l-1.41 1.41L11.66 19l12-12-1.42-1.41zM.41 13.41L6 19l1.41-1.41L1.83 12 .41 13.41z"/></svg>';
+            } else if (msg.entregue) {
+              html += '<svg class="w-3.5 h-3.5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>';
+            }
+          }
+          html += '</div>';
+          html += '</div>';
+          html += '</div>';
+        });
+
+        container.innerHTML = html;
+        container.scrollTop = container.scrollHeight;
+      }
+
+      function chat_equipe_voltarLista() {
+        chat_equipe_chatAtual = null;
+        document.getElementById('chat-detalhe-view').classList.add('hidden');
+        document.getElementById('chat-lista-view').classList.remove('hidden');
+        chat_equipe_renderLista();
+      }
+
+      function chat_equipe_enviarMensagem() {
+        var input = document.getElementById('chat-input-mensagem');
+        var texto = input.value.trim();
+        if (!texto && chat_equipe_anexosSelecionados.length === 0) return;
+        if (!chat_equipe_chatAtual) return;
+
+        var msg = {
+          id: chat_equipe_chatAtual.mensagens.length + 1,
+          texto: texto,
+          hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+          enviada: true,
+          entregue: true,
+          lida: false,
+          anexo: chat_equipe_anexosSelecionados.length > 0 ? chat_equipe_anexosSelecionados[0] : null
+        };
+
+        chat_equipe_chatAtual.mensagens.push(msg);
+        chat_equipe_anexosSelecionados = [];
+        document.getElementById('chat-anexos-preview').classList.add('hidden');
+        input.value = '';
+        chat_equipe_renderMensagens();
+
+        setTimeout(function() {
+          msg.entregue = true;
+          if (chat_equipe_chatAtual && chat_equipe_chatAtual.id === msg._convId) {
+            chat_equipe_renderMensagens();
+          }
+        }, 1200);
+
+        if (chat_equipe_chatAtual.tipo === 'grupo') {
+          var respostas = [
+            'Entendi, obrigado por avisar!',
+            'Perfeito, já vi a mensagem.',
+            'Ok, combinado!',
+            'Vou verificar e te retorno.',
+            'Certo, anotado.',
+          ];
+          setTimeout(function() {
+            if (!chat_equipe_chatAtual) return;
+            document.getElementById('chat-digitando-indicator').classList.remove('hidden');
+            document.getElementById('chat-digitando-nome').textContent = chat_equipe_chatAtual.digitandoNome + ' está digitando...';
+            setTimeout(function() {
+              document.getElementById('chat-digitando-indicator').classList.add('hidden');
+              var resposta = { id: chat_equipe_chatAtual.mensagens.length + 1, texto: respostas[Math.floor(Math.random() * respostas.length)], hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }), enviada: false, entregue: true, lida: false, anexo: null };
+              chat_equipe_chatAtual.mensagens.push(resposta);
+              if (chat_equipe_chatAtual) chat_equipe_renderMensagens();
+            }, 2000 + Math.random() * 1500);
+          }, 1500);
+        }
+      }
+
+      function chat_equipe_enviarTecla(e) {
+        if (e.key === 'Enter') chat_equipe_enviarMensagem();
+      }
+
+      function chat_equipe_buscar(termo) {
+        var container = document.getElementById('chat-lista-conversas');
+        var vazia = document.getElementById('chat-lista-vazia');
+        if (!termo) {
+          chat_equipe_renderLista();
+          container.classList.remove('hidden');
+          vazia.classList.add('hidden');
+          return;
+        }
+        var t = termo.toLowerCase();
+        var filtradas = chat_equipe_conversas.filter(function(c) {
+          if (c.nome.toLowerCase().includes(t)) return true;
+          return c.mensagens.some(function(m) { return m.texto.toLowerCase().includes(t); });
+        });
+        var html = '';
+        if (filtradas.length === 0) {
+          container.classList.add('hidden');
+          vazia.classList.remove('hidden');
+        } else {
+          container.classList.remove('hidden');
+          vazia.classList.add('hidden');
+          filtradas.forEach(function(conv) {
+            var ultima = conv.mensagens.length > 0 ? conv.mensagens[conv.mensagens.length - 1] : null;
+            var ultimaMsg = ultima ? (ultima.anexo ? '📎 ' + ultima.anexo.nome : ultima.texto.substring(0, 48) + (ultima.texto.length > 48 ? '...' : '')) : 'Sem mensagens';
+            var naoLidasBadge = conv.naoLidas > 0 ? '<span class="bg-marca-600 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0">' + conv.naoLidas + '</span>' : '';
+            var digitandoHtml = conv.digitando ? '<p class="text-[11px] text-marca-600 italic mt-0.5">digitando...</p>' : '';
+            var avatarHtml = '';
+            if (conv.tipo === 'grupo') {
+              avatarHtml = '<div class="' + conv.avatarCor + ' w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"><svg class="w-6 h-6 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>';
+            } else {
+              avatarHtml = '<div class="' + conv.avatarCor + ' w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">' + (conv.iniciais || conv.nome.split(' ').map(function(w){return w[0]}).join('').substring(0,2).toUpperCase()) + '</div>';
+            }
+            html += '<div onclick="chat_equipe_abrirChat(' + conv.id + ')" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 active:bg-gray-100 cursor-pointer transition-all border-b border-gray-50">';
+            html += avatarHtml;
+            html += '<div class="flex-1 min-w-0">';
+            html += '<div class="flex items-center justify-between">';
+            html += '<span class="font-display font-bold text-sm text-gray-900 truncate">' + conv.nome + '</span>';
+            html += '<span class="text-[11px] text-gray-400 flex-shrink-0 ml-2">' + (ultima ? ultima.hora : '') + '</span>';
+            html += '</div>';
+            html += '<div class="flex items-center justify-between mt-1">';
+            html += '<p class="text-xs text-gray-500 truncate pr-2">' + ultimaMsg + '</p>';
+            html += naoLidasBadge;
+            html += '</div>';
+            html += digitandoHtml;
+            html += '</div>';
+            html += '</div>';
+          });
+        }
+        container.innerHTML = html;
+      }
+
+      function chat_equipe_abrirAnexo() {
+        document.getElementById('modal-anexo-chat').classList.remove('hidden');
+      }
+      function chat_equipe_fecharAnexo() {
+        document.getElementById('modal-anexo-chat').classList.add('hidden');
+      }
+      function chat_equipe_anexarFoto() {
+        chat_equipe_fecharAnexo();
+        chat_equipe_anexosSelecionados = [{ tipo: 'imagem', nome: 'foto_enviada_' + new Date().getHours() + 'h' + new Date().getMinutes() + '.jpg', desc: 'Foto da unidade de saúde' }];
+        chat_equipe_mostrarPreviewAnexos();
+        toast('Foto selecionada da galeria', 'ok');
+      }
+      function chat_equipe_anexarCamera() {
+        chat_equipe_fecharAnexo();
+        chat_equipe_anexosSelecionados = [{ tipo: 'imagem', nome: 'foto_camera_' + new Date().getHours() + 'h' + new Date().getMinutes() + '.jpg', desc: 'Foto tirada com a câmera' }];
+        chat_equipe_mostrarPreviewAnexos();
+        toast('Foto capturada pela câmera', 'ok');
+      }
+      function chat_equipe_anexarPDF() {
+        chat_equipe_fecharAnexo();
+        var docs = ['escala_plantao.pdf', 'relatorio_atendimentos.pdf', 'protocolo_emergencia.pdf', 'lista_medicamentos.pdf'];
+        chat_equipe_anexosSelecionados = [{ tipo: 'pdf', nome: docs[Math.floor(Math.random() * docs.length)], desc: 'Documento compartilhado' }];
+        chat_equipe_mostrarPreviewAnexos();
+        toast('Documento PDF anexado', 'ok');
+      }
+      function chat_equipe_anexarLocalizacao() {
+        chat_equipe_fecharAnexo();
+        chat_equipe_anexosSelecionados = [{ tipo: 'localizacao', nome: 'localizacao_atual', desc: 'Hospital Santa Clara — Av. Brasil, 1500' }];
+        chat_equipe_mostrarPreviewAnexos();
+        toast('Localização compartilhada', 'ok');
+      }
+      function chat_equipe_mostrarPreviewAnexos() {
+        var preview = document.getElementById('chat-anexos-preview');
+        var lista = document.getElementById('chat-anexos-lista');
+        var html = '';
+        chat_equipe_anexosSelecionados.forEach(function(anx, i) {
+          html += '<div class="flex items-center gap-2 bg-gray-100 rounded-lg px-2.5 py-1.5 flex-shrink-0">';
+          html += '<svg class="w-4 h-4 text-marca-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>';
+          html += '<span class="text-xs text-gray-700 truncate max-w-[100px]">' + anx.nome + '</span>';
+          html += '<button onclick="chat_equipe_removerAnexo(' + i + ')" class="text-gray-400 hover:text-red-500 active:scale-90 transition-all ml-1">';
+          html += '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>';
+          html += '</button>';
+          html += '</div>';
+        });
+        lista.innerHTML = html;
+        preview.classList.remove('hidden');
+      }
+      function chat_equipe_removerAnexo(index) {
+        chat_equipe_anexosSelecionados.splice(index, 1);
+        if (chat_equipe_anexosSelecionados.length === 0) {
+          document.getElementById('chat-anexos-preview').classList.add('hidden');
+        } else {
+          chat_equipe_mostrarPreviewAnexos();
+        }
+      }
+
+      chat_equipe_renderLista();
+      </script>
+    </section>
+
     <!-- TELAS -->
   </main>
 
