@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>PlantoAí — Gestão de Escalas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            marca: {
+              50: '#effdf6', 100: '#d8f9e6', 200: '#b3f2d0', 300: '#7ce7af',
+              400: '#3ed68a', 500: '#17b56e', 600: '#0c8f56', 700: '#0b7146',
+              800: '#0d5939', 900: '#09482e',
+            },
+            destaque: {
+              50: '#fff5f2', 100: '#ffe8e1', 200: '#ffd0c1', 300: '#ffab93',
+              400: '#ff7d5c', 500: '#f9613a', 600: '#e04c25', 700: '#b93b1d',
+              800: '#93331e', 900: '#7a2e1e',
+            },
+            neu: {
+              50: '#f6f7f9', 100: '#eef0f4', 200: '#dde1e9', 300: '#c3c9d6',
+              400: '#a3aab9', 500: '#828a9a', 600: '#69717f', 700: '#545b67',
+              800: '#3d434d', 900: '#282c33',
+            },
+          },
+          fontFamily: {
+            display: ['Outfit', 'system-ui', 'sans-serif'],
+            body: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            card: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)',
+            cardHover: '0 2px 6px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.06)',
+            navbar: '0 -1px 12px rgba(0,0,0,0.06)',
+            modal: '0 12px 40px rgba(0,0,0,0.18)',
+            toast: '0 4px 20px rgba(0,0,0,0.12)',
+            fab: '0 4px 16px rgba(23,181,110,0.35)',
+          },
+          borderRadius: {
+            card: '16px',
+            btn: '12px',
+            input: '12px',
+            nav: '14px',
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    * { -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background: #e2e6ed;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    #moldura {
+      width: 100%;
+      max-width: 390px;
+      background: #f6f7f9;
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px #dde1e9, 0 20px 60px rgba(0,0,0,0.12);
+    }
+    @media (min-width: 430px) {
+      body { padding: 24px 0; align-items: flex-start; }
+      #moldura {
+        min-height: calc(100vh - 48px);
+        max-height: calc(100vh - 48px);
+        border-radius: 40px;
+        overflow: hidden;
+      }
+    }
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 0; height: 0; }
+    /* focus */
+    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: 2.5px solid #17b56e;
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+    /* screen transition */
+    [data-tela] {
+      display: none;
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    [data-tela].tela-ativa {
+      display: block;
+      animation: telaEntrada 0.28s ease-out forwards;
+    }
+    @keyframes telaEntrada {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    /* active nav */
+    .ativo {
+      color: #17b56e !important;
+    }
+    .ativo svg { stroke: #17b56e; }
+    .ativo .nav-dot { background: #17b56e; opacity: 1; }
+    /* utilities */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      letter-spacing: 0.01em;
+    }
+    .badge-verde  { background: #d8f9e6; color: #0c8f56; }
+    .badge-vermelho { background: #ffe8e1; color: #b93b1d; }
+    .badge-amarelo { background: #fff5e0; color: #9a6e00; }
+    .badge-azul   { background: #e3f0ff; color: #2563a8; }
+    .badge-cinza  { background: #eef0f4; color: #69717f; }
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+      transition: box-shadow 0.2s, transform 0.15s;
+    }
+    .card:active {
+      transform: scale(0.985);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 22px;
+      border-radius: 12px;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.12s, box-shadow 0.2s, background 0.2s;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .btn:active { transform: scale(0.96); }
+    .btn-marca {
+      background: #17b56e; color: #fff;
+      box-shadow: 0 2px 8px rgba(23,181,110,0.3);
+    }
+    .btn-marca:hover { background: #0c8f56; }
+    .btn-outline {
+      background: transparent; color: #0c8f56;
+      border: 1.5px solid #b3f2d0;
+    }
+    .btn-outline:hover { background: #effdf6; }
+    .btn-destaque {
+      background: #f9613a; color: #fff;
+      box-shadow: 0 2px 8px rgba(249,97,58,0.3);
+    }
+    .btn-destaque:hover { background: #e04c25; }
+    .btn-cinza {
+      background: #eef0f4; color: #3d434d;
+    }
+    .btn-cinza:hover { background: #dde1e9; }
+    .btn-icon {
+      width: 44px; height: 44px;
+      padding: 0;
+      border-radius: 12px;
+    }
+    /* toast */
+    #toast-wrap {
+      position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+      z-index: 9999; display: flex; flex-direction: column; gap: 8px;
+      width: calc(100% - 32px); max-width: 390px; pointer-events: none;
+    }
+    .toast {
+      pointer-events: auto;
+      padding: 14px 18px;
+      border-radius: 14px;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      display: flex; align-items: center; gap: 10px;
+      animation: toastIn 0.32s ease-out forwards;
+    }
+    .toast.sair { animation: toastOut 0.25s ease-in forwards; }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-18px) scale(0.94); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes toastOut {
+      to { opacity: 0; transform: translateY(-14px) scale(0.94); }
+    }
+    .toast-ok    { background: #0c8f56; color: #fff; }
+    .toast-erro  { background: #c0392b; color: #fff; }
+    .toast-info  { background: #2563a8; color: #fff; }
+    /* modal */
+    #modal-bg {
+      position: fixed; inset: 0;
+      background: rgba(10,12,18,0.55);
+      z-index: 8000;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      animation: modalBgIn 0.22s ease-out;
+    }
+    #modal-bg.aberto { display: flex; }
+    @keyframes modalBgIn { from { opacity: 0; } to { opacity: 1; } }
+    #modal-card {
+      background: #fff;
+      width: 100%; max-width: 390px;
+      border-radius: 24px 24px 0 0;
+      max-height: 75vh;
+      overflow-y: auto;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+      animation: modalCardUp 0.32s cubic-bezier(.22,.68,0,1.1) forwards;
+    }
+    @keyframes modalCardUp {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+    @media (min-width: 430px) {
+      #modal-bg { align-items: center; }
+      #modal-card { border-radius: 24px; max-height: 70vh; }
+    }
+    /* input base */
+    .input-campo {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1.5px solid #dde1e9;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-size: 14px;
+      background: #fff;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      box-sizing: border-box;
+    }
+    .input-campo:focus {
+      outline: none;
+      border-color: #17b56e;
+      box-shadow: 0 0 0 3px rgba(23,181,110,0.12);
+    }
+    /* nav item */
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 2px; padding: 4px 0;
+      color: #a3aab9; text-decoration: none;
+      font-size: 10px; font-weight: 600;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      transition: color 0.2s;
+      cursor: pointer;
+      background: none; border: none;
+      flex: 1;
+    }
+    .nav-item svg { transition: stroke 0.2s; }
+    /* status bar time */
+    .hora-status {
+      font-family: 'Outfit', system-ui, sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="moldura">
+  <!-- BARRA DE STATUS -->
+  <header id="status-bar" class="flex items-center justify-between px-7 pt-3 pb-2 bg-white/80 backdrop-blur-sm select-none" style="position:sticky;top:0;z-index:50;">
+    <span class="hora-status text-neu-800" id="hora">09:41</span>
+    <div class="flex items-center gap-1.5">
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><rect x="0" y="5" width="3" height="7" rx="1" fill="#282c33"/><rect x="4.5" y="3.5" width="3" height="8.5" rx="1" fill="#282c33"/><rect x="9" y="1.5" width="3" height="10.5" rx="1" fill="#282c33"/><rect x="13.5" y="0" width="2.5" height="12" rx="1" fill="#282c33"/></svg>
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 8.5a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Z" stroke="#282c33" stroke-width="1.2" fill="none"/><path d="M6 5v3.5l2.5 1.2" stroke="#282c33" stroke-width="1.2" stroke-linecap="round"/></svg>
+      <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x="0.5" y="0.5" width="19" height="10" rx="3" stroke="#282c33" stroke-width="1"/><rect x="2" y="2" width="15" height="7" rx="1.5" fill="#282c33"/><rect x="20" y="3.5" width="1.5" height="4" rx="0.75" fill="#282c33"/></svg>
+    </div>
+  </header>
+
+  <!-- ÁREA DE TELAS -->
+  <main id="app-main" style="height:calc(100vh - 52px - 68px); overflow-y:auto; -webkit-overflow-scrolling:touch;">
+    <!-- TELAS -->
+  </main>
+
+  <!-- NAVEGAÇÃO INFERIOR -->
+  <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[390px] bg-white/90 backdrop-blur-lg border-t border-neu-100 px-2 pb-[env(safe-area-inset-bottom)]" style="z-index:50; box-shadow: 0 -1px 12px rgba(0,0,0,0.06);" id="nav-bar">
+    <div class="flex items-center justify-around pt-1 pb-1.5">
+      <button class="nav-item" data-nav="painel-inicial" onclick="mostrarTela('painel-inicial')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        <span>Painel</span>
+        <span class="nav-dot w-1 h-1 rounded-full bg-marca-500 opacity-0 transition-opacity"></span>
+      </button>
+      <button class="nav-item" data-nav="escala-mensal" onclick="mostrarTela('escala-mensal')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="2" x2="9" y2="6"/><line x1="15" y1="2" x2="15" y2="6"/></svg>
+        <span>Escala</span>
+        <span class="nav-dot w-1 h-1 rounded-full bg-marca-500 opacity-0 transition-opacity"></span>
+      </button>
+      <button class="nav-item" data-nav="trocar-plantao" onclick="mostrarTela('trocar-plantao')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        <span>Trocar</span>
+        <span class="nav-dot w-1 h-1 rounded-full bg-destaque-500 opacity-0 transition-opacity"></span>
+      </button>
+      <button class="nav-item" data-nav="painel-admin" onclick="mostrarTela('painel-admin')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+        <span>Admin</span>
+        <span class="nav-dot w-1 h-1 rounded-full bg-marca-500 opacity-0 transition-opacity"></span>
+      </button>
+      <button class="nav-item" data-nav="nova-escala" onclick="mostrarTela('nova-escala')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        <span>Nova</span>
+        <span class="nav-dot w-1 h-1 rounded-full bg-marca-500 opacity-0 transition-opacity"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- TOASTS -->
+  <div id="toast-wrap"></div>
+
+  <!-- MODAL -->
+  <div id="modal-bg" onclick="if(event.target===this)fecharModal()">
+    <div id="modal-card"></div>
+  </div>
+</div>
+
+<script>
+  // ── ROTEADOR ──────────────────────────────────────────────────────
+  function mostrarTela(id) {
+    document.querySelectorAll('[data-tela]').forEach(function (s) {
+      s.classList.toggle('hidden', s.dataset.tela !== id);
+    });
+    document.querySelectorAll('[data-tela]').forEach(function (s) {
+      if (s.dataset.tela === id) {
+        s.classList.remove('hidden');
+        void s.offsetWidth;
+        s.classList.add('tela-ativa');
+      } else {
+        s.classList.remove('tela-ativa');
+      }
+    });
+    document.querySelectorAll('[data-nav]').forEach(function (b) {
+      b.classList.toggle('ativo', b.dataset.nav === id);
+    });
+    window.scrollTo({ top: 0 });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    mostrarTela('painel-inicial');
+  });
+
+  // ── HORA STATUS BAR ──────────────────────────────────────────────
+  function atualizarHora() {
+    var agora = new Date();
+    var h = String(agora.getHours()).padStart(2, '0');
+    var m = String(agora.getMinutes()).padStart(2, '0');
+    document.getElementById('hora').textContent = h + ':' + m;
+  }
+  atualizarHora();
+  setInterval(atualizarHora, 30000);
+
+  // ── TOAST ────────────────────────────────────────────────────────
+  function toast(mensagem, tipo) {
+    tipo = tipo || 'info';
+    var wrap = document.getElementById('toast-wrap');
+    var el = document.createElement('div');
+    var icone = tipo === 'ok' ? '&#10003;' : tipo === 'erro' ? '&#10007;' : '&#9432;';
+    el.className = 'toast toast-' + tipo;
+    el.innerHTML = '<span>' + icone + '</span><span>' + mensagem + '</span>';
+    wrap.appendChild(el);
+    setTimeout(function () {
+      el.classList.add('sair');
+      setTimeout(function () { el.remove(); }, 260);
+    }, 3000);
+  }
+
+  // ── MODAL ────────────────────────────────────────────────────────
+  function abrirModal(html, titulo) {
+    var bg = document.getElementById('modal-bg');
+    var card = document.getElementById('modal-card');
+    card.innerHTML =
+      '<div class="p-6">' +
+        '<div class="flex items-center justify-between mb-5">' +
+          '<h3 class="font-display text-lg font-700 text-neu-900">' + titulo + '</h3>' +
+          '<button onclick="fecharModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-neu-50 text-neu-500 hover:bg-neu-100 transition-colors">' +
+            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+          '</button>' +
+        '</div>' +
+        '<div>' + html + '</div>' +
+      '</div>';
+    bg.classList.add('aberto');
+    document.body.style.overflow = 'hidden';
+  }
+  function fecharModal() {
+    document.getElementById('modal-bg').classList.remove('aberto');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') fecharModal();
+  });
+
+  // ── UTILITÁRIOS ──────────────────────────────────────────────────
+  function brl(valor) {
+    return 'R$ ' + Number(valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function dataBR(iso) {
+    if (!iso) return '—';
+    var d = new Date(iso + 'T00:00:00');
+    var dd = String(d.getDate()).padStart(2, '0');
+    var mm = String(d.getMonth() + 1).padStart(2, '0');
+    var aaaa = d.getFullYear();
+    return dd + '/' + mm + '/' + aaaa;
+  }
+</script>
+
+</body>
+</html>
