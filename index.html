@@ -2524,6 +2524,277 @@ if (typeof mostrarTela === 'function') {
       </script>
     </section>
 
+    <section data-tela="notificacoes" class="hidden">
+  <div class="px-4 pt-2 pb-1">
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="font-display text-xl font-bold text-gray-900">Notificações</h2>
+        <p class="text-sm text-gray-500 mt-0.5">7 não lidas</p>
+      </div>
+      <button onclick="notificacoes_marcarTodasLidas()" class="text-sm text-marca-600 font-medium hover:text-marca-700 active:scale-95 transition-all">Marcar todas como lidas</button>
+    </div>
+    <div class="mt-3 relative">
+      <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      <input id="notificacoes-busca" type="text" placeholder="Buscar notificação..." oninput="notificacoes_filtrar(this.value)" class="w-full pl-9 pr-4 py-2 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-marca-500/30 focus:border-marca-500 transition-all font-body">
+    </div>
+  </div>
+
+  <div class="px-4 mt-3">
+    <div class="flex bg-gray-100 rounded-xl p-1">
+      <button onclick="notificacoes_aba('trocas')" id="aba-trocas" class="aba-ativa flex-1 py-2 text-sm font-medium rounded-lg transition-all">Trocas</button>
+      <button onclick="notificacoes_aba('plantoes')" id="aba-plantoes" class="flex-1 py-2 text-sm font-medium rounded-lg transition-all">Plantões</button>
+      <button onclick="notificacoes_aba('sistema')" id="aba-sistema" class="flex-1 py-2 text-sm font-medium rounded-lg transition-all">Sistema</button>
+    </div>
+  </div>
+
+  <div id="lista-trocas" class="px-4 mt-3 space-y-2.5"></div>
+  <div id="lista-plantoes" class="px-4 mt-3 space-y-2.5 hidden"></div>
+  <div id="lista-sistema" class="px-4 mt-3 space-y-2.5 hidden"></div>
+
+  <div id="notificacoes-vazio" class="hidden px-4 mt-8 text-center">
+    <svg class="w-16 h-16 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+    <p class="mt-3 text-gray-500 font-medium">Nenhuma notificação encontrada</p>
+    <p class="text-sm text-gray-400 mt-1">Tudo em dia por aqui!</p>
+  </div>
+
+  <div class="mt-6 px-4 pb-28">
+    <div class="flex items-center justify-center gap-2 py-3 bg-gray-50 rounded-xl">
+      <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.03-1.383l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      <span class="text-sm text-gray-600 font-medium">Conectado via WhatsApp</span>
+      <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+    </div>
+  </div>
+</section>
+
+<script>
+(function() {
+  const dados = {
+    trocas: [
+      { id: 1, tipo: 'trocas', titulo: 'Solicitação de troca de plantão', desc: 'Dr. Carlos Mendes quer trocar o plantão de 15/Jan com você', tempo: 'há 5 min', lida: false, nome: 'Dr. Carlos Mendes', dataPlantao: '15 de Janeiro', hora: '07:00 - 19:00', local: 'Hospital Santa Clara', motivo: 'Compromisso familiar', expandida: false },
+      { id: 2, tipo: 'trocas', titulo: 'Solicitação de cessão de plantão', desc: 'Enf. Juliana Costa solicitou cessão do plantão 22/Jan', tempo: 'há 32 min', lida: false, nome: 'Enf. Juliana Costa', dataPlantao: '22 de Janeiro', hora: '19:00 - 07:00', local: 'UPA Centro', motivo: 'Curso de especialização', expandida: false },
+      { id: 3, tipo: 'trocas', titulo: 'Troca confirmada', desc: 'Você aceitou a troca com Dra. Ana Beatriz para 08/Fev', tempo: 'há 1h', lida: true, nome: 'Dra. Ana Beatriz Souza', dataPlantao: '08 de Fevereiro', hora: '07:00 - 19:00', local: 'Pronto Socorro Municipal', motivo: '', expandida: false },
+      { id: 4, tipo: 'trocas', titulo: 'Solicitação recusada', desc: 'Téc. Enf. Patrícia Lima recusou sua proposta de troca 29/Jan', tempo: 'há 2h', lida: true, nome: 'Téc. Enf. Patrícia Lima', dataPlantao: '29 de Janeiro', hora: '07:00 - 19:00', local: 'Hospital Santa Clara', motivo: 'Já aceitou outra troca', expandida: false },
+      { id: 5, tipo: 'trocas', titulo: 'Nova proposta de troca', desc: 'Enf. Marcos Vinícius propõe troca para o plantão 05/Fev', tempo: 'há 3h', lida: false, nome: 'Enf. Marcos Vinícius', dataPlantao: '05 de Fevereiro', hora: '19:00 - 07:00', local: 'UPA Zona Sul', motivo: 'Necessidade de folga', expandida: false },
+      { id: 6, tipo: 'trocas', titulo: 'Aguardando resposta', desc: 'Você solicitou troca com Dr. Fernando para 12/Fev', tempo: 'há 5h', lida: true, nome: 'Dr. Fernando Almeida', dataPlantao: '12 de Fevereiro', hora: '07:00 - 19:00', local: 'Hospital Santa Clara', motivo: 'Folga desejada', expandida: false },
+      { id: 7, tipo: 'trocas', titulo: 'Solicitação de troca pendente', desc: 'Dra. Camila Ribeiro quer trocar o plantão de 19/Jan com você', tempo: 'há 8h', lida: false, nome: 'Dra. Camila Ribeiro', dataPlantao: '19 de Janeiro', hora: '07:00 - 19:00', local: 'Pronto Socorro Municipal', motivo: 'Consulta médica particular', expandida: false },
+      { id: 8, tipo: 'trocas', titulo: 'Troca pendente de aprovação', desc: 'Troca entre Dr. Mendes e Dra. Souza aguarda aprovação', tempo: 'há 12h', lida: true, nome: 'Dr. Carlos Mendes / Dra. Ana Beatriz', dataPlantao: '25 de Janeiro', hora: '19:00 - 07:00', local: 'UPA Centro', motivo: '', expandida: false },
+    ],
+    plantoes: [
+      { id: 9, tipo: 'plantoes', titulo: 'Confirmação de plantão', desc: 'Confirme sua presença no plantão de 16/Jan — Hospital Santa Clara', tempo: 'há 10 min', lida: false, nome: '', dataPlantao: '16 de Janeiro', hora: '07:00 - 19:00', local: 'Hospital Santa Clara', motivo: '', expandida: false },
+      { id: 10, tipo: 'plantoes', titulo: 'Lembrete: plantão em 2h', desc: 'Seu plantão começa em 2h no Pronto Socorro Municipal', tempo: 'há 35 min', lida: false, nome: '', dataPlantao: 'Hoje', hora: '19:00 - 07:00', local: 'Pronto Socorro Municipal', motivo: '', expandida: false },
+      { id: 11, tipo: 'plantoes', titulo: 'Alteração na escala', desc: 'Plantão de 20/Jan foi remanejado para a UPA Zona Sul', tempo: 'há 1h', lida: false, nome: '', dataPlantao: '20 de Janeiro', hora: '07:00 - 19:00', local: 'UPA Zona Sul', motivo: 'Alteração administrativa', expandida: false },
+      { id: 12, tipo: 'plantoes', titulo: 'Confirmação recebida', desc: 'Dra. Camila confirmou presença no plantão 19/Jan', tempo: 'há 2h', lida: true, nome: 'Dra. Camila Ribeiro', dataPlantao: '19 de Janeiro', hora: '07:00 - 19:00', local: 'Pronto Socorro Municipal', motivo: '', expandida: false },
+      { id: 13, tipo: 'plantoes', titulo: 'Plantão encerrado', desc: 'Plantão de hoje finalizado com sucesso — registre a ocorrência', tempo: 'há 4h', lida: true, nome: '', dataPlantao: 'Hoje', hora: '07:00 - 19:00', local: 'Hospital Santa Clara', motivo: '', expandida: false },
+      { id: 14, tipo: 'plantoes', titulo: 'Lembrete: plantão amanhã', desc: 'Você tem plantão amanhã às 07:00 — UPA Centro', tempo: 'há 6h', lida: true, nome: '', dataPlantao: 'Amanhã', hora: '07:00 - 19:00', local: 'UPA Centro', motivo: '', expandida: false },
+      { id: 15, tipo: 'plantoes', titulo: 'Confirmação pendente', desc: 'Aguardando confirmação de Dr. Fernando para o plantão 12/Fev', tempo: 'há 10h', lida: true, nome: 'Dr. Fernando Almeida', dataPlantao: '12 de Fevereiro', hora: '07:00 - 19:00', local: 'Hospital Santa Clara', motivo: '', expandida: false },
+    ],
+    sistema: [
+      { id: 16, tipo: 'sistema', titulo: 'Documento pendente', desc: 'Certificado de atualização em urgência aguarda upload', tempo: 'há 1h', lida: false, nome: '', dataPlantao: '', hora: '', local: '', motivo: '', expandida: false },
+      { id: 17, tipo: 'sistema', titulo: 'Aviso da equipe', desc: 'Nova diretriz de plantão publicada — leitura obrigatória', tempo: 'há 3h', lida: false, nome: 'Coordenação de Enfermagem', dataPlantao: '', hora: '', local: '', motivo: '', expandida: false },
+      { id: 18, tipo: 'sistema', titulo: 'Atualização do app', desc: 'Versão 2.4.1 disponível com novas funcionalidades', tempo: 'há 5h', lida: true, nome: '', dataPlantao: '', hora: '', local: '', motivo: '', expandida: false },
+      { id: 19, tipo: 'sistema', titulo: 'Frequência irregular', desc: 'Falta não justificada registrada em 08/Jan — justifique até 22/Jan', tempo: 'há 1 dia', lida: false, nome: '', dataPlantao: '08 de Janeiro', hora: '', local: '', motivo: '', expandida: false },
+      { id: 20, tipo: 'sistema', titulo: 'Aviso da equipe', desc: 'Reunião de escala marcada para 25/Jan às 14h na sala 3', tempo: 'há 2 dias', lida: true, nome: 'Supervisão', dataPlantao: '25 de Janeiro', hora: '14:00', local: 'Sala 3 — Hospital Santa Clara', motivo: '', expandida: false },
+      { id: 21, tipo: 'sistema', titulo: 'Holerite disponível', desc: 'Holerite de Dezembro/2025 já está disponível para download', tempo: 'há 3 dias', lida: true, nome: '', dataPlantao: '', hora: '', local: '', motivo: '', expandida: false },
+      { id: 22, tipo: 'sistema', titulo: 'Atualização do app', desc: 'Agora você pode configurar lembretes personalizados de plantão', tempo: 'há 5 dias', lida: true, nome: '', dataPlantao: '', hora: '', local: '', motivo: '', expandida: false },
+    ]
+  };
+
+  let abaAtual = 'trocas';
+  let naoLidas = 7;
+
+  function svgIcone(tipo) {
+    const icones = {
+      trocas: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>`,
+      plontoes: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`,
+      sistema: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>`,
+      confirmar: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`,
+      alerta: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>`
+    };
+    return icones[tipo] || icones.sistema;
+  }
+
+  function corBadge(tipo) {
+    const cores = {
+      trocas: 'bg-amber-100 text-amber-700',
+      plontoes: 'bg-blue-100 text-blue-700',
+      sistema: 'bg-gray-100 text-gray-600'
+    };
+    return cores[tipo] || cores.sistema;
+  }
+
+  function corIcone(tipo) {
+    const cores = {
+      trocas: 'bg-amber-50 text-amber-600',
+      plontoes: 'bg-blue-50 text-blue-600',
+      sistema: 'bg-gray-100 text-gray-500'
+    };
+    return cores[tipo] || cores.sistema;
+  }
+
+  function corStatus(status) {
+    if (!status) return '';
+    const s = status.toLowerCase();
+    if (s.includes('confirm')) return 'bg-green-100 text-green-700';
+    if (s.includes('aguardando') || s.includes('pendent')) return 'bg-yellow-100 text-yellow-700';
+    if (s.includes('recus') || s.includes('irregular')) return 'bg-red-100 text-red-700';
+    if (s.includes('encerr') || s.includes('recebida')) return 'bg-blue-100 text-blue-700';
+    return 'bg-gray-100 text-gray-600';
+  }
+
+  function inicialLetras(nome) {
+    if (!nome) return '??';
+    const partes = nome.trim().split(' ');
+    if (partes.length >= 2) return (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
+    return nome.substring(0, 2).toUpperCase();
+  }
+
+  function corAvatar(nome) {
+    const hash = nome ? nome.split('').reduce((a, c) => a + c.charCodeAt(0), 0) : 0;
+    const cores = ['bg-marca-100 text-marca-700','bg-blue-100 text-blue-700','bg-emerald-100 text-emerald-700','bg-amber-100 text-amber-700','bg-rose-100 text-rose-700','bg-indigo-100 text-indigo-700','bg-teal-100 text-teal-700','bg-orange-100 text-orange-700'];
+    return cores[hash % cores.length];
+  }
+
+  function criarItemNotif(item) {
+    const naoLidaClass = item.lida ? 'opacity-70' : 'bg-white';
+    const badgeDot = !item.lida ? `<span class="absolute -top-0.5 -right-0.5 w-3 h-3 bg-marca-500 rounded-full border-2 border-white"></span>` : '';
+    const expandidaClass = item.expandida ? 'mt-3 p-3 bg-gray-50 rounded-xl space-y-2.5' : 'hidden';
+
+    let html = `<div class="card p-3.5 ${naoLidaClass} transition-all cursor-pointer" onclick="notificacoes_toggleExpand(${item.id})">
+      <div class="flex gap-3">
+        <div class="relative flex-shrink-0">
+          ${item.nome ? `<div class="w-10 h-10 rounded-full ${corAvatar(item.nome)} flex items-center justify-center text-sm font-bold">${inicialLetras(item.nome)}</div>` : `<div class="w-10 h-10 rounded-full ${corIcone(item.tipo)} flex items-center justify-center">${svgIcone(item.tipo)}</div>`}
+          ${badgeDot}
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-start justify-between gap-2">
+            <p class="font-display font-semibold text-sm text-gray-900 leading-snug">${item.titulo}</p>
+            ${!item.lida ? `<span class="badge bg-marca-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold flex-shrink-0">NOVO</span>` : ''}
+          </div>
+          <p class="text-xs text-gray-500 mt-1 leading-relaxed line-clamp-2">${item.desc}</p>
+          <span class="text-[11px] text-gray-400 mt-1.5 block">${item.tempo}</span>
+        </div>
+      </div>`;
+
+    if (item.tipo === 'trocas') {
+      html += `<div id="expand-${item.id}" class="${expandidaClass}">
+        <div class="space-y-1.5 text-xs">
+          <div class="flex justify-between"><span class="text-gray-500">Plantão:</span><span class="font-medium text-gray-800">${item.dataPlantao}</span></div>
+          <div class="flex justify-between"><span class="text-gray-500">Horário:</span><span class="font-medium text-gray-800">${item.hora}</span></div>
+          <div class="flex justify-between"><span class="text-gray-500">Local:</span><span class="font-medium text-gray-800">${item.local}</span></div>
+          ${item.motivo ? `<div class="flex justify-between"><span class="text-gray-500">Motivo:</span><span class="font-medium text-gray-800">${item.motivo}</span></div>` : ''}
+        </div>
+        <div class="flex gap-2 mt-3">
+          <button onclick="event.stopPropagation(); notificacoes_aceitar(${item.id})" class="flex-1 py-2.5 bg-green-600 text-white text-sm font-semibold rounded-xl active:scale-95 transition-all hover:bg-green-700">Aceitar</button>
+          <button onclick="event.stopPropagation(); notificacoes_recusar(${item.id})" class="flex-1 py-2.5 bg-red-50 text-red-600 border border-red-200 text-sm font-semibold rounded-xl active:scale-95 transition-all hover:bg-red-100">Recusar</button>
+        </div>
+      </div>`;
+    }
+
+    html += `</div>`;
+    return html;
+  }
+
+  function renderLista() {
+    const itens = dados[abaAtual];
+    const busca = document.getElementById('notificacoes-busca')?.value?.toLowerCase() || '';
+    const filtrados = itens.filter(i => !busca || i.titulo.toLowerCase().includes(busca) || i.desc.toLowerCase().includes(busca));
+
+    const container = document.getElementById('lista-' + abaAtual);
+    const vazio = document.getElementById('notificacoes-vazio');
+
+    if (filtrados.length === 0) {
+      container.innerHTML = '';
+      container.classList.add('hidden');
+      vazio.classList.remove('hidden');
+    } else {
+      vazio.classList.add('hidden');
+      container.classList.remove('hidden');
+      container.innerHTML = filtrados.map(item => criarItemNotif(item)).join('');
+    }
+  }
+
+  window.notificacoes_aba = function(aba) {
+    abaAtual = aba;
+    ['trocas','plantoes','sistema'].forEach(a => {
+      const btn = document.getElementById('aba-' + a);
+      const lista = document.getElementById('lista-' + a);
+      if (a === aba) {
+        btn.classList.add('bg-white','text-marca-700','shadow-sm','font-semibold');
+        btn.classList.remove('text-gray-500','hover:text-gray-700');
+        lista.classList.remove('hidden');
+      } else {
+        btn.classList.remove('bg-white','text-marca-700','shadow-sm','font-semibold');
+        btn.classList.add('text-gray-500','hover:text-gray-700');
+        lista.classList.add('hidden');
+      }
+    });
+    renderLista();
+  };
+
+  window.notificacoes_toggleExpand = function(id) {
+    const item = dados.trocas.find(i => i.id === id);
+    if (!item || item.tipo !== 'trocas') return;
+    item.expandida = !item.expandida;
+    if (!item.lida) {
+      item.lida = true;
+      naoLidas = Math.max(0, naoLidas - 1);
+      document.querySelector('[data-tela="notificacoes"] h2 + p').textContent = naoLidas + ' não lidas';
+      if (naoLidas === 0) {
+        document.querySelector('[data-tela="notificacoes"] button').classList.add('opacity-50');
+      }
+    }
+    renderLista();
+  };
+
+  window.notificacoes_aceitar = function(id) {
+    const item = dados.trocas.find(i => i.id === id);
+    if (!item) return;
+    item.expandida = false;
+    item.lida = true;
+    naoLidas = Math.max(0, naoLidas - 1);
+    document.querySelector('[data-tela="notificacoes"] h2 + p').textContent = naoLidas + ' não lidas';
+    renderLista();
+    toast('Troca aceita com sucesso! A escala foi atualizada.', 'ok');
+  };
+
+  window.notificacoes_recusar = function(id) {
+    const item = dados.trocas.find(i => i.id === id);
+    if (!item) return;
+    item.expandida = false;
+    item.lida = true;
+    naoLidas = Math.max(0, naoLidas - 1);
+    document.querySelector('[data-tela="notificacoes"] h2 + p').textContent = naoLidas + ' não lidas';
+    renderLista();
+    toast('Solicitação de troca recusada.', 'info');
+  };
+
+  window.notificacoes_marcarTodasLidas = function() {
+    ['trocas','plantoes','sistema'].forEach(tipo => {
+      dados[tipo].forEach(item => item.lida = true);
+    });
+    naoLidas = 0;
+    document.querySelector('[data-tela="notificacoes"] h2 + p').textContent = 'Todas lidas';
+    document.querySelector('[data-tela="notificacoes"] button').classList.add('opacity-50');
+    renderLista();
+    toast('Todas as notificações foram marcadas como lidas.', 'ok');
+  };
+
+  window.notificacoes_filtrar = function(termo) {
+    renderLista();
+  };
+
+  const init = function() {
+    notificacoes_aba('trocas');
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
     <!-- TELAS -->
   </main>
 
