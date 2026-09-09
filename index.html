@@ -1281,6 +1281,405 @@
 })();
 </script>
 
+    <section data-tela="painel-admin" class="hidden">
+  <div class="animate-fadeIn">
+    <div class="flex items-center justify-between mb-5">
+      <div>
+        <h1 class="font-display text-xl font-bold text-gray-900">Painel Administrativo</h1>
+        <p class="text-sm text-gray-500 mt-0.5">Visão geral do sistema · <span id="painel_admin_data_atual"></span></p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="mostrarTela('nova-escala')" class="btn bg-marca-600 text-white px-4 py-2 rounded-xl text-sm font-semibold active:scale-95 transition-all shadow-md shadow-marca-200 flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          Nova Escala
+        </button>
+        <button onclick="mostrarTela('notificacoes')" class="relative p-2.5 rounded-xl bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 transition-all active:scale-95">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+          <span id="painel_admin_badge_notif" class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">4</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Cards de Indicadores -->
+    <div class="grid grid-cols-2 gap-3 mb-5">
+      <div class="card bg-white p-4 rounded-2xl border border-gray-100 cursor-pointer hover:shadow-lg transition-all active:scale-[0.97]" onclick="abrirModal(painel_admin_detalhe_profissionais(), 'Profissionais Ativos')">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </div>
+          <span class="badge bg-green-50 text-green-700 text-xs font-semibold px-2 py-0.5 rounded-lg">+3</span>
+        </div>
+        <p class="text-2xl font-bold text-gray-900 font-display">42</p>
+        <p class="text-xs text-gray-500 mt-0.5">Profissionais ativos</p>
+      </div>
+
+      <div class="card bg-white p-4 rounded-2xl border border-gray-100 cursor-pointer hover:shadow-lg transition-all active:scale-[0.97]" onclick="mostrarTela('escala-mensal')">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 rounded-xl bg-marca-50 flex items-center justify-center">
+            <svg class="w-5 h-5 text-marca-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          </div>
+          <span class="badge bg-marca-50 text-marca-700 text-xs font-semibold px-2 py-0.5 rounded-lg">Jun/2025</span>
+        </div>
+        <p class="text-2xl font-bold text-gray-900 font-display">186</p>
+        <p class="text-xs text-gray-500 mt-0.5">Plantões escalados</p>
+      </div>
+
+      <div class="card bg-white p-4 rounded-2xl border border-gray-100 cursor-pointer hover:shadow-lg transition-all active:scale-[0.97]" onclick="abrirModal(painel_admin_detalhe_ocupacao(), 'Taxa de Ocupação')">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
+            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          </div>
+          <span class="badge bg-green-50 text-green-700 text-xs font-semibold px-2 py-0.5 rounded-lg">+5.2%</span>
+        </div>
+        <p class="text-2xl font-bold text-gray-900 font-display">94,7%</p>
+        <p class="text-xs text-gray-500 mt-0.5">Taxa de ocupação</p>
+      </div>
+
+      <div class="card bg-white p-4 rounded-2xl border border-gray-100 cursor-pointer hover:shadow-lg transition-all active:scale-[0.97]" onclick="mostrarTela('trocar-plantao')">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
+            <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+          </div>
+          <span class="badge bg-red-50 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-lg animate-pulse">3 urgentes</span>
+        </div>
+        <p class="text-2xl font-bold text-gray-900 font-display">7</p>
+        <p class="text-xs text-gray-500 mt-0.5">Trocas pendentes</p>
+      </div>
+    </div>
+
+    <!-- Gráfico: Cobertura por Unidade -->
+    <div class="card bg-white p-4 rounded-2xl border border-gray-100 mb-5">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="font-display font-bold text-gray-900 text-sm">Cobertura de Plantões</h2>
+          <p class="text-xs text-gray-500">Por unidade de saúde · Junho 2025</p>
+        </div>
+        <div class="flex gap-1">
+          <button onclick="painel_admin_filtro_grafico('semana')" id="painel_admin_btn_semana" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-marca-50 text-marca-700 transition-all">Semana</button>
+          <button onclick="painel_admin_filtro_grafico('mes')" id="painel_admin_btn_mes" class="text-xs font-semibold px-3 py-1.5 rounded-lg text-gray-500 hover:bg-gray-50 transition-all">Mês</button>
+        </div>
+      </div>
+      <svg id="painel_admin_grafico" viewBox="0 0 340 180" class="w-full" style="max-height:200px">
+        <g transform="translate(35,10)">
+          <!-- Grid lines -->
+          <line x1="0" y1="0" x2="290" y2="0" stroke="#f3f4f6" stroke-width="1"/>
+          <line x1="0" y1="45" x2="290" y2="45" stroke="#f3f4f6" stroke-width="1"/>
+          <line x1="0" y1="90" x2="290" y2="90" stroke="#f3f4f6" stroke-width="1"/>
+          <line x1="0" y1="135" x2="290" y2="135" stroke="#f3f4f6" stroke-width="1"/>
+          <!-- Y labels -->
+          <text x="-8" y="4" text-anchor="end" class="text-[9px]" fill="#9CA3AF">100%</text>
+          <text x="-8" y="49" text-anchor="end" class="text-[9px]" fill="#9CA3AF">75%</text>
+          <text x="-8" y="94" text-anchor="end" class="text-[9px]" fill="#9CA3AF">50%</text>
+          <text x="-8" y="139" text-anchor="end" class="text-[9px]" fill="#9CA3AF">25%</text>
+          <!-- Bars: UBS Central -->
+          <rect x="10" y="27" width="18" height="108" rx="3" fill="#0d9488" class="transition-all duration-500"/>
+          <rect x="32" y="13.5" width="18" height="121.5" rx="3" fill="#0d9488" class="transition-all duration-500"/>
+          <rect x="54" y="40.5" width="18" height="94.5" rx="3" fill="#0d9488" opacity="0.6" class="transition-all duration-500"/>
+          <!-- Bars: UBS Sul -->
+          <rect x="90" y="18" width="18" height="117" rx="3" fill="#6366f1" class="transition-all duration-500"/>
+          <rect x="112" y="31.5" width="18" height="103.5" rx="3" fill="#6366f1" class="transition-all duration-500"/>
+          <rect x="134" y="49.5" width="18" height="85.5" rx="3" fill="#6366f1" opacity="0.6" class="transition-all duration-500"/>
+          <!-- Bars: UBS Leste -->
+          <rect x="170" y="36" width="18" height="99" rx="3" fill="#f59e0b" class="transition-all duration-500"/>
+          <rect x="192" y="49.5" width="18" height="85.5" rx="3" fill="#f59e0b" class="transition-all duration-500"/>
+          <rect x="214" y="63" width="18" height="72" rx="3" fill="#f59e0b" opacity="0.6" class="transition-all duration-500"/>
+          <!-- Bars: UBS Norte -->
+          <rect x="250" y="22.5" width="18" height="112.5" rx="3" fill="#10b981" class="transition-all duration-500"/>
+          <rect x="272" y="36" width="18" height="99" rx="3" fill="#10b981" class="transition-all duration-500"/>
+          <rect x="294" y="54" width="18" height="81" rx="3" fill="#10b981" opacity="0.6" class="transition-all duration-500"/>
+          <!-- X labels -->
+          <text x="41" y="155" text-anchor="middle" class="text-[9px] font-semibold" fill="#6B7280">UBS Central</text>
+          <text x="121" y="155" text-anchor="middle" class="text-[9px] font-semibold" fill="#6B7280">UBS Sul</text>
+          <text x="201" y="155" text-anchor="middle" class="text-[9px] font-semibold" fill="#6B7280">UBS Leste</text>
+          <text x="281" y="155" text-anchor="middle" class="text-[9px] font-semibold" fill="#6B7280">UBS Norte</text>
+          <!-- Legend -->
+          <text x="0" y="175" class="text-[8px]" fill="#9CA3AF">■ Manhã  ■ Tarde  ■ Noite</text>
+        </g>
+      </svg>
+      <div class="flex items-center justify-center gap-5 mt-2 text-xs text-gray-500">
+        <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-marca-600 inline-block"></span>UBS Central</span>
+        <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-indigo-500 inline-block"></span>UBS Sul</span>
+        <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-amber-500 inline-block"></span>UBS Leste</span>
+        <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-emerald-500 inline-block"></span>UBS Norte</span>
+      </div>
+    </div>
+
+    <!-- Alertas -->
+    <div class="card bg-white rounded-2xl border border-gray-100 mb-5 overflow-hidden">
+      <div class="flex items-center justify-between p-4 pb-3">
+        <h2 class="font-display font-bold text-gray-900 text-sm flex items-center gap-2">
+          <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          Alertas do Sistema
+        </h2>
+        <span id="painel_admin_contador_alertas" class="badge bg-red-50 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-lg">5</span>
+      </div>
+      <div id="painel_admin_lista_alertas" class="divide-y divide-gray-50">
+      </div>
+    </div>
+
+    <!-- Menu Rápido -->
+    <div class="card bg-white p-4 rounded-2xl border border-gray-100 mb-20">
+      <h2 class="font-display font-bold text-gray-900 text-sm mb-3">Acesso Rápido</h2>
+      <div class="grid grid-cols-3 gap-2.5">
+        <button onclick="mostrarTela('escala-mensal')" class="flex flex-col items-center gap-2 p-3 rounded-xl bg-gray-50 hover:bg-marca-50 transition-all active:scale-95 group">
+          <div class="w-10 h-10 rounded-xl bg-white group-hover:bg-marca-100 flex items-center justify-center transition-all shadow-sm">
+            <svg class="w-5 h-5 text-gray-600 group-hover:text-marca-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+          </div>
+          <span class="text-xs font-medium text-gray-700">Relatórios</span>
+        </button>
+        <button onclick="abrirModal(painel_admin_modal_gerenciar(), 'Gerenciar Profissionais')" class="flex flex-col items-center gap-2 p-3 rounded-xl bg-gray-50 hover:bg-marca-50 transition-all active:scale-95 group">
+          <div class="w-10 h-10 rounded-xl bg-white group-hover:bg-marca-100 flex items-center justify-center transition-all shadow-sm">
+            <svg class="w-5 h-5 text-gray-600 group-hover:text-marca-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          </div>
+          <span class="text-xs font-medium text-gray-700">Profissionais</span>
+        </button>
+        <button onclick="mostrarTela('nova-escala')" class="flex flex-col items-center gap-2 p-3 rounded-xl bg-gray-50 hover:bg-marca-50 transition-all active:scale-95 group">
+          <div class="w-10 h-10 rounded-xl bg-white group-hover:bg-marca-100 flex items-center justify-center transition-all shadow-sm">
+            <svg class="w-5 h-5 text-gray-600 group-hover:text-marca-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          </div>
+          <span class="text-xs font-medium text-gray-700">Publicar Escala</span>
+        </button>
+        <button onclick="mostrarTela('chat-equipe')" class="flex flex-col items-center gap-2 p-3 rounded-xl bg-gray-50 hover:bg-marca-50 transition-all active:scale-95 group">
+          <div class="w-10 h-10 rounded-xl bg-white group-hover:bg-marca-100 flex items-center justify-center transition-all shadow-sm">
+            <svg class="w-5 h-5 text-gray-600 group-hover:text-marca-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          </div>
+          <span class="text-xs font-medium text-gray-700">Chat Equipe</span>
+        </button>
+        <button onclick="mostrarTela('localizacao-plantoes')" class="flex flex-col items-center gap-2 p-3 rounded-xl bg-gray-50 hover:bg-marca-50 transition-all active:scale-95 group">
+          <div class="w-10 h-10 rounded-xl bg-white group-hover:bg-marca-100 flex items-center justify-center transition-all shadow-sm">
+            <svg class="w-5 h-5 text-gray-600 group-hover:text-marca-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243A8 8 0 1117.657 16.657z"/><circle cx="12" cy="11" r="1.5" fill="currentColor"/></svg>
+          </div>
+          <span class="text-xs font-medium text-gray-700">Mapa</span>
+        </button>
+        <button onclick="abrirModal(painel_admin_modal_exportar(), 'Exportar Dados')" class="flex flex-col items-center gap-2 p-3 rounded-xl bg-gray-50 hover:bg-marca-50 transition-all active:scale-95 group">
+          <div class="w-10 h-10 rounded-xl bg-white group-hover:bg-marca-100 flex items-center justify-center transition-all shadow-sm">
+            <svg class="w-5 h-5 text-gray-600 group-hover:text-marca-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </div>
+          <span class="text-xs font-medium text-gray-700">Exportar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+function painel_admin_init() {
+  document.getElementById('painel_admin_data_atual').textContent = painel_admin_dataBR(new Date());
+  painel_admin_render_alertas();
+}
+
+function painel_admin_dataBR(d) {
+  const meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  return d.getDate() + ' de ' + meses[d.getMonth()] + ' de ' + d.getFullYear();
+}
+
+const painel_admin_alertas = [
+  { tipo: 'cobertura', cor: 'red', icone: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>', titulo: 'Plantão sem cobertura', descricao: 'UBS Leste · 14/06 · Turno da noite', data: '13/06/2025', urgencia: 'alta', id: 1 },
+  { tipo: 'documento', cor: 'yellow', icone: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>', titulo: 'Documento vencido', descricao: 'Dr. Ricardo Souza · COREN vencido', data: '12/06/2025', urgencia: 'media', id: 2 },
+  { tipo: 'troca', cor: 'blue', icone: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>', titulo: 'Troca aguardando resposta', descricao: 'Enf. Carla Dias ↔ Enf. Lucas Mendes · 16/06', data: '13/06/2025', urgencia: 'media', id: 3 },
+  { tipo: 'cobertura', cor: 'red', icone: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>', titulo: 'Plantão sem cobertura', descricao: 'UBS Central · 18/06 · Turno da manhã', data: '14/06/2025', urgencia: 'alta', id: 4 },
+  { tipo: 'documento', cor: 'yellow', icone: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>', titulo: 'Documento vencido', descricao: 'Téc. Ana Paula · CRP vencendo em 5 dias', data: '13/06/2025', urgencia: 'media', id: 5 },
+  { tipo: 'troca', cor: 'blue', icone: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>', titulo: 'Troca aguardando aprovação', descricao: 'Dr. Paulo Henrique ↔ Enf. Mariana · 20/06', data: '14/06/2025', urgencia: 'baixa', id: 6 },
+];
+
+function painel_admin_render_alertas(filtro) {
+  const container = document.getElementById('painel_admin_lista_alertas');
+  let lista = painel_admin_alertas;
+  if (filtro) lista = lista.filter(a => a.tipo === filtro);
+
+  if (lista.length === 0) {
+    container.innerHTML = '<div class="p-8 text-center text-gray-400 text-sm">Nenhum alerta encontrado</div>';
+    return;
+  }
+
+  container.innerHTML = lista.map(a => {
+    const corMap = { red: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-l-red-500' }, yellow: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-l-amber-500' }, blue: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-l-blue-500' } };
+    const c = corMap[a.cor];
+    const urgenciaLabel = { alta: 'Urgente', media: 'Atenção', baixa: 'Info' };
+    return '<div class="flex items-start gap-3 p-3.5 hover:bg-gray-50 transition-all cursor-pointer border-l-3 ' + c.border + ' ' + c.bg + ' mx-1 rounded-r-xl" onclick="painel_admin_abrir_alerta(' + a.id + ')">' +
+      '<div class="mt-0.5 ' + c.text + '">' + a.icone + '</div>' +
+      '<div class="flex-1 min-w-0">' +
+        '<div class="flex items-center gap-2">' +
+          '<p class="text-sm font-semibold text-gray-900 truncate">' + a.titulo + '</p>' +
+          '<span class="badge ' + c.bg + ' ' + c.text + ' text-[10px] font-bold px-1.5 py-0.5 rounded-md whitespace-nowrap">' + urgenciaLabel[a.urgencia] + '</span>' +
+        '</div>' +
+        '<p class="text-xs text-gray-600 mt-0.5">' + a.descricao + '</p>' +
+        '<p class="text-[11px] text-gray-400 mt-1">' + a.data + '</p>' +
+      '</div>' +
+      '<svg class="w-4 h-4 text-gray-300 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>' +
+    '</div>';
+  }).join('');
+}
+
+function painel_admin_abrir_alerta(id) {
+  const a = painel_admin_alertas.find(x => x.id === id);
+  if (!a) return;
+  const acoes = { cobertura: 'Alocar profissional', documento: 'Solicitar renovação', troca: 'Revisar troca' };
+  abrirModal(
+    '<div class="space-y-4">' +
+      '<div class="bg-gray-50 rounded-xl p-4 space-y-2">' +
+        '<div class="flex justify-between text-sm"><span class="text-gray-500">Tipo</span><span class="font-semibold text-gray-900">' + a.titulo + '</span></div>' +
+        '<div class="flex justify-between text-sm"><span class="text-gray-500">Descrição</span><span class="font-semibold text-gray-900 text-right max-w-[60%]">' + a.descricao + '</span></div>' +
+        '<div class="flex justify-between text-sm"><span class="text-gray-500">Data</span><span class="font-semibold text-gray-900">' + a.data + '</span></div>' +
+        '<div class="flex justify-between text-sm"><span class="text-gray-500">Urgência</span><span class="badge ' + (a.urgencia === 'alta' ? 'bg-red-50 text-red-700' : a.urgencia === 'media' ? 'bg-amber-50 text-amber-700' : 'bg-blue-50 text-blue-700') + ' text-xs font-bold px-2 py-0.5 rounded-lg">' + (a.urgencia === 'alta' ? 'Urgente' : a.urgencia === 'media' ? 'Atenção' : 'Info') + '</span></div>' +
+      '</div>' +
+      '<button onclick="painel_admin_resolver_alerta(' + a.id + '); fecharModal();" class="btn w-full bg-marca-600 text-white py-3 rounded-xl text-sm font-semibold active:scale-95 transition-all shadow-md shadow-marca-200">' + acoes[a.tipo] + '</button>' +
+      '<button onclick="fecharModal()" class="btn w-full bg-gray-100 text-gray-700 py-3 rounded-xl text-sm font-semibold active:scale-95 transition-all">Fechar</button>' +
+    '</div>',
+    'Detalhe do Alerta'
+  );
+}
+
+function painel_admin_resolver_alerta(id) {
+  const idx = painel_admin_alertas.findIndex(x => x.id === id);
+  if (idx > -1) {
+    painel_admin_alertas.splice(idx, 1);
+    painel_admin_render_alertas();
+    document.getElementById('painel_admin_contador_alertas').textContent = painel_admin_alertas.length;
+    toast('Alerta resolvido com sucesso!', 'ok');
+  }
+}
+
+function painel_admin_filtro_grafico(periodo) {
+  const btnSemana = document.getElementById('painel_admin_btn_semana');
+  const btnMes = document.getElementById('painel_admin_btn_mes');
+  if (periodo === 'semana') {
+    btnSemana.className = 'text-xs font-semibold px-3 py-1.5 rounded-lg bg-marca-50 text-marca-700 transition-all';
+    btnMes.className = 'text-xs font-semibold px-3 py-1.5 rounded-lg text-gray-500 hover:bg-gray-50 transition-all';
+  } else {
+    btnMes.className = 'text-xs font-semibold px-3 py-1.5 rounded-lg bg-marca-50 text-marca-700 transition-all';
+    btnSemana.className = 'text-xs font-semibold px-3 py-1.5 rounded-lg text-gray-500 hover:bg-gray-50 transition-all';
+  }
+}
+
+function painel_admin_detalhe_profissionais() {
+  const profissionais = [
+    { nome: 'Dra. Fernanda Lima', funcao: 'Médica', unidade: 'UBS Central', cor: 'bg-teal-100 text-teal-700', status: 'Ativo' },
+    { nome: 'Enf. Carlos Mendes', funcao: 'Enfermeiro', unidade: 'UBS Sul', cor: 'bg-indigo-100 text-indigo-700', status: 'Ativo' },
+    { nome: 'Téc. Ana Paula', funcao: 'Téc. Enfermagem', unidade: 'UBS Leste', cor: 'bg-amber-100 text-amber-700', status: 'Ativo' },
+    { nome: 'Dr. Ricardo Souza', funcao: 'Médico', unidade: 'UBS Norte', cor: 'bg-emerald-100 text-emerald-700', status: 'Documento vencido' },
+    { nome: 'Enf. Carla Dias', funcao: 'Enfermeiro', unidade: 'UBS Central', cor: 'bg-teal-100 text-teal-700', status: 'Ativo' },
+    { nome: 'Dr. Paulo Henrique', funcao: 'Médico', unidade: 'UBS Sul', cor: 'bg-indigo-100 text-indigo-700', status: 'Em troca' },
+  ];
+  const iniciais = n => n.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+  return '<div class="space-y-2 max-h-[60vh] overflow-y-auto pr-1">' + profissionais.map(p =>
+    '<div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">' +
+      '<div class="w-9 h-9 rounded-full ' + p.cor + ' flex items-center justify-center text-xs font-bold flex-shrink-0">' + iniciais(p.nome) + '</div>' +
+      '<div class="flex-1 min-w-0">' +
+        '<p class="text-sm font-semibold text-gray-900 truncate">' + p.nome + '</p>' +
+        '<p class="text-xs text-gray-500">' + p.funcao + ' · ' + p.unidade + '</p>' +
+      '</div>' +
+      '<span class="badge ' + (p.status === 'Ativo' ? 'bg-green-50 text-green-700' : p.status === 'Documento vencido' ? 'bg-red-50 text-red-700' : 'bg-amber-50 text-amber-700') + ' text-[10px] font-bold px-2 py-0.5 rounded-lg whitespace-nowrap">' + p.status + '</span>' +
+    '</div>'
+  ).join('') + '</div>';
+}
+
+function painel_admin_detalhe_ocupacao() {
+  return '<div class="space-y-4">' +
+    '<svg viewBox="0 0 200 120" class="w-full max-w-[200px] mx-auto">' +
+      '<circle cx="100" cy="100" r="80" fill="none" stroke="#f3f4f6" stroke-width="16"/>' +
+      '<circle cx="100" cy="100" r="80" fill="none" stroke="#0d9488" stroke-width="16" stroke-dasharray="502.65" stroke-dashoffset="26" stroke-linecap="round" transform="rotate(-90 100 100)" class="transition-all duration-1000"/>' +
+      '<text x="100" y="96" text-anchor="middle" class="text-2xl font-bold" fill="#111827" font-family="sans-serif">94,7%</text>' +
+      '<text x="100" y="112" text-anchor="middle" class="text-[10px]" fill="#6B7280" font-family="sans-serif">ocupação</text>' +
+    '</svg>' +
+    '<div class="space-y-2">' +
+      '<div class="flex justify-between text-sm"><span class="text-gray-500">Manhã</span><span class="font-semibold text-gray-900">96,2%</span></div>' +
+      '<div class="flex justify-between text-sm"><span class="text-gray-500">Tarde</span><span class="font-semibold text-gray-900">95,8%</span></div>' +
+      '<div class="flex justify-between text-sm"><span class="text-gray-500">Noite</span><span class="font-semibold text-gray-900">91,3%</span></div>' +
+      '<div class="flex justify-between text-sm"><span class="text-gray-500">Madrugada</span><span class="font-semibold text-gray-900">88,5%</span></div>' +
+    '</div>' +
+  '</div>';
+}
+
+function painel_admin_modal_gerenciar() {
+  const profissionais = [
+    { nome: 'Dra. Fernanda Lima', funcao: 'Médica', unidade: 'UBS Central', cor: 'bg-teal-100 text-teal-700', ativo: true },
+    { nome: 'Enf. Carlos Mendes', funcao: 'Enfermeiro', unidade: 'UBS Sul', cor: 'bg-indigo-100 text-indigo-700', ativo: true },
+    { nome: 'Téc. Ana Paula', funcao: 'Téc. Enfermagem', unidade: 'UBS Leste', cor: 'bg-amber-100 text-amber-700', ativo: true },
+    { nome: 'Dr. Ricardo Souza', funcao: 'Médico', unidade: 'UBS Norte', cor: 'bg-emerald-100 text-emerald-700', ativo: true },
+    { nome: 'Enf. Carla Dias', funcao: 'Enfermeiro', unidade: 'UBS Central', cor: 'bg-teal-100 text-teal-700', ativo: true },
+    { nome: 'Dr. Paulo Henrique', funcao: 'Médico', unidade: 'UBS Sul', cor: 'bg-indigo-100 text-indigo-700', ativo: true },
+  ];
+  const iniciais = n => n.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+  return '<div class="space-y-2 max-h-[60vh] overflow-y-auto pr-1">' +
+    '<div class="flex gap-2 mb-3">' +
+      '<input type="text" id="painel_admin_busca_prof" placeholder="Buscar profissional..." oninput="painel_admin_filtrar_profissionais()" class="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-marca-500 focus:border-transparent">' +
+    '</div>' +
+    '<div id="painel_admin_lista_profissionais">' +
+      profissionais.map((p, i) =>
+        '<div class="painel_admin_prof_item flex items-center gap-3 p-3 bg-gray-50 rounded-xl" data-nome="' + p.nome.toLowerCase() + '">' +
+          '<div class="w-9 h-9 rounded-full ' + p.cor + ' flex items-center justify-center text-xs font-bold flex-shrink-0">' + iniciais(p.nome) + '</div>' +
+          '<div class="flex-1 min-w-0">' +
+            '<p class="text-sm font-semibold text-gray-900">' + p.nome + '</p>' +
+            '<p class="text-xs text-gray-500">' + p.funcao + ' · ' + p.unidade + '</p>' +
+          '</div>' +
+          '<button onclick="painel_admin_toggle_prof(this)" class="relative w-10 h-6 rounded-full transition-all ' + (p.ativo ? 'bg-marca-600' : 'bg-gray-300') + ' flex-shrink-0">' +
+            '<span class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-all ' + (p.ativo ? 'translate-x-4' : 'translate-x-0') + '"></span>' +
+          '</button>' +
+        '</div>'
+      ).join('') +
+    '</div>' +
+  '</div>';
+}
+
+function painel_admin_filtrar_profissionais() {
+  const q = document.getElementById('painel_admin_busca_prof').value.toLowerCase();
+  document.querySelectorAll('.painel_admin_prof_item').forEach(el => {
+    const nome = el.getAttribute('data-nome');
+    el.style.display = nome.includes(q) ? '' : 'none';
+  });
+}
+
+function painel_admin_toggle_prof(btn) {
+  const isOn = btn.classList.contains('bg-marca-600');
+  if (isOn) {
+    btn.classList.remove('bg-marca-600'); btn.classList.add('bg-gray-300');
+    btn.querySelector('span').classList.remove('translate-x-4'); btn.querySelector('span').classList.add('translate-x-0');
+    toast('Profissional desativado', 'info');
+  } else {
+    btn.classList.remove('bg-gray-300'); btn.classList.add('bg-marca-600');
+    btn.querySelector('span').classList.remove('translate-x-0'); btn.querySelector('span').classList.add('translate-x-4');
+    toast('Profissional ativado!', 'ok');
+  }
+}
+
+function painel_admin_modal_exportar() {
+  return '<div class="space-y-3">' +
+    '<p class="text-sm text-gray-600">Selecione o formato e período para exportar os dados do sistema:</p>' +
+    '<div class="space-y-2">' +
+      '<label class="flex items-center gap-3 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-all">' +
+        '<input type="radio" name="export_formato" value="pdf" checked class="accent-marca-600">' +
+        '<div><p class="text-sm font-semibold text-gray-900">PDF</p><p class="text-xs text-gray-500">Relatório completo</p></div>' +
+      '</label>' +
+      '<label class="flex items-center gap-3 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-all">' +
+        '<input type="radio" name="export_formato" value="xlsx" class="accent-marca-600">' +
+        '<div><p class="text-sm font-semibold text-gray-900">Excel (XLSX)</p><p class="text-xs text-gray-500">Dados tabulares</p></div>' +
+      '</label>' +
+      '<label class="flex items-center gap-3 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-all">' +
+        '<input type="radio" name="export_formato" value="csv" class="accent-marca-600">' +
+        '<div><p class="text-sm font-semibold text-gray-900">CSV</p><p class="text-xs text-gray-500">Dados brutos</p></div>' +
+      '</label>' +
+    '</div>' +
+    '<button onclick="painel_admin_confirmar_exportar(); fecharModal();" class="btn w-full bg-marca-600 text-white py-3 rounded-xl text-sm font-semibold active:scale-95 transition-all shadow-md shadow-marca-200 mt-4">Exportar Dados</button>' +
+    '<button onclick="fecharModal()" class="btn w-full bg-gray-100 text-gray-700 py-3 rounded-xl text-sm font-semibold active:scale-95 transition-all">Cancelar</button>' +
+  '</div>';
+}
+
+function painel_admin_confirmar_exportar() {
+  const fmt = document.querySelector('input[name="export_formato"]:checked').value;
+  toast('Exportando relatório em ' + fmt.toUpperCase() + '...', 'info');
+  setTimeout(() => toast('Arquivo gerado com sucesso!', 'ok'), 1500);
+}
+
+if (typeof mostrarTela === 'function') {
+  const _orig = mostrarTela;
+  mostrarTela = function(id) {
+    _orig(id);
+    if (id === 'painel-admin') setTimeout(painel_admin_init, 50);
+  };
+}
+</script>
+
     <!-- TELAS -->
   </main>
 
