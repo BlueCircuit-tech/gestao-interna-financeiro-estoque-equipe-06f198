@@ -286,6 +286,255 @@
 
   <!-- ÁREA DE TELAS -->
   <main id="app-main" style="height:calc(100vh - 52px - 68px); overflow-y:auto; -webkit-overflow-scrolling:touch;">
+    <section data-tela="painel-inicial" class="hidden">
+    <div class="px-4 pt-2 pb-6 space-y-4 animate-fadeIn">
+        <!-- Header Saudação -->
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-full bg-marca-100 text-marca-700 flex items-center justify-center font-display font-bold text-lg border-2 border-marca-200">MC</div>
+                <div>
+                    <p class="text-sm text-gray-500 font-body">Bom dia,</p>
+                    <p class="font-display font-semibold text-gray-900 text-base leading-tight">Dra. Maria Costa</p>
+                </div>
+            </div>
+            <button onclick="mostrarTela('notificacoes')" class="relative w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-sm border border-gray-100 active:scale-90 transition-all">
+                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                <span id="badge-notif-painel" class="absolute -top-0.5 -right-0.5 w-4.5 h-4.5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center leading-none">3</span>
+            </button>
+        </div>
+
+        <!-- Card Plantão do Dia -->
+        <div class="card p-4 bg-gradient-to-br from-marca-600 to-marca-800 text-white rounded-2xl shadow-lg shadow-marca-200/50 cursor-pointer" onclick="painel_inicial_detalharPlantaoHoje()">
+            <div class="flex items-center gap-1.5 mb-3">
+                <svg class="w-4 h-4 text-marca-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span class="text-xs font-medium text-marca-200 uppercase tracking-wider">Plantão Hoje</span>
+            </div>
+            <h2 class="font-display font-bold text-xl mb-1">UBS Jardim América</h2>
+            <div class="flex items-center gap-2 mb-3">
+                <svg class="w-4 h-4 text-marca-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <p class="text-sm text-marca-100">Rua das Flores, 420 — Jardim América, SP</p>
+            </div>
+            <div class="flex items-center gap-4 mb-3 bg-white/10 rounded-xl p-3">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-marca-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                    <div><p class="text-[10px] text-marca-300 uppercase">Entrada</p><p class="font-semibold text-sm">07:00</p></div>
+                </div>
+                <div class="w-px h-8 bg-white/20"></div>
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-marca-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                    <div><p class="text-[10px] text-marca-300 uppercase">Saída</p><p class="font-semibold text-sm">19:00</p></div>
+                </div>
+                <div class="w-px h-8 bg-white/20"></div>
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-marca-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <div><p class="text-[10px] text-marca-300 uppercase">Carga</p><p class="font-semibold text-sm">12h</p></div>
+                </div>
+            </div>
+            <!-- Mini Mapa -->
+            <div class="bg-white/10 rounded-xl p-2.5 flex items-center gap-2.5">
+                <svg class="w-5 h-5 text-marca-200 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+                <div class="flex-1 min-w-0">
+                    <svg viewBox="0 0 280 40" class="w-full h-8">
+                        <rect width="280" height="40" rx="6" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="0.5"/>
+                        <path d="M0,32 Q30,8 60,20 T120,16 T180,24 T220,12 T280,20" fill="none" stroke="#0e7490" stroke-width="2" stroke-dasharray="4,2"/>
+                        <circle cx="10" cy="28" r="4" fill="#0e7490" opacity="0.3"/>
+                        <circle cx="10" cy="28" r="2.5" fill="#0e7490"/>
+                        <circle cx="270" cy="16" r="4" fill="#b91c1c" opacity="0.2"/>
+                        <circle cx="270" cy="16" r="2.5" fill="#b91c1c"/>
+                        <text x="10" y="38" font-size="6" fill="#0e7490" font-family="sans-serif">Você</text>
+                        <text x="252" y="38" font-size="6" fill="#b91c1c" font-family="sans-serif">Destino</text>
+                    </svg>
+                </div>
+                <span class="text-[11px] text-marca-200 font-medium shrink-0">~25 min</span>
+            </div>
+            <p class="text-[11px] text-marca-300 mt-2 text-right">Toque para ver detalhes →</p>
+        </div>
+
+        <!-- Indicadores Rápidos -->
+        <div class="grid grid-cols-3 gap-2.5">
+            <div class="card p-3 text-center rounded-xl">
+                <div class="w-8 h-8 mx-auto mb-1.5 bg-emerald-50 rounded-lg flex items-center justify-center">
+                    <svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <p class="font-display font-bold text-lg text-gray-900 leading-none">14</p>
+                <p class="text-[10px] text-gray-500 mt-0.5">Plantões/mês</p>
+            </div>
+            <div class="card p-3 text-center rounded-xl">
+                <div class="w-8 h-8 mx-auto mb-1.5 bg-amber-50 rounded-lg flex items-center justify-center">
+                    <svg class="w-4.5 h-4.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                </div>
+                <p class="font-display font-bold text-lg text-gray-900 leading-none">2</p>
+                <p class="text-[10px] text-gray-500 mt-0.5">Trocas pend.</p>
+            </div>
+            <div class="card p-3 text-center rounded-xl">
+                <div class="w-8 h-8 mx-auto mb-1.5 bg-sky-50 rounded-lg flex items-center justify-center">
+                    <svg class="w-4.5 h-4.5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                </div>
+                <p class="font-display font-bold text-lg text-gray-900 leading-none">3</p>
+                <p class="text-[10px] text-gray-500 mt-0.5">Não lidas</p>
+            </div>
+        </div>
+
+        <!-- Ações Principais -->
+        <div class="grid grid-cols-3 gap-2.5">
+            <button onclick="mostrarTela('trocar-plantao')" class="btn flex flex-col items-center gap-1.5 py-3 px-1 bg-amber-50 border border-amber-200 rounded-xl active:scale-95 transition-all">
+                <div class="w-9 h-9 bg-amber-100 rounded-full flex items-center justify-center">
+                    <svg class="w-5 h-5 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                </div>
+                <span class="text-[11px] font-semibold text-amber-800">Solicitar Troca</span>
+            </button>
+            <button onclick="painel_inicial_registrarEntrada()" class="btn flex flex-col items-center gap-1.5 py-3 px-1 bg-emerald-50 border border-emerald-200 rounded-xl active:scale-95 transition-all">
+                <div class="w-9 h-9 bg-emerald-100 rounded-full flex items-center justify-center">
+                    <svg class="w-5 h-5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                </div>
+                <span class="text-[11px] font-semibold text-emerald-800">Registrar Entrada</span>
+            </button>
+            <button onclick="mostrarTela('escala-mensal')" class="btn flex flex-col items-center gap-1.5 py-3 px-1 bg-marca-50 border border-marca-200 rounded-xl active:scale-95 transition-all">
+                <div class="w-9 h-9 bg-marca-100 rounded-full flex items-center justify-center">
+                    <svg class="w-5 h-5 text-marca-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                </div>
+                <span class="text-[11px] font-semibold text-marca-700">Ver Escala</span>
+            </button>
+        </div>
+
+        <!-- Gráfico Plantões no Mês (SVG inline) -->
+        <div class="card p-4 rounded-2xl">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="font-display font-semibold text-sm text-gray-800">Plantões no Mês</h3>
+                <span class="text-[10px] text-gray-400 font-medium">Janeiro 2025</span>
+            </div>
+            <svg viewBox="0 0 320 100" class="w-full h-24">
+                <line x1="0" y1="85" x2="320" y2="85" stroke="#e5e7eb" stroke-width="1"/>
+                <text x="0" y="96" font-size="7" fill="#9ca3af" font-family="sans-serif">1</text>
+                <text x="78" y="96" font-size="7" fill="#9ca3af" font-family="sans-serif">8</text>
+                <text x="156" y="96" font-size="7" fill="#9ca3af" font-family="sans-serif">15</text>
+                <text x="234" y="96" font-size="7" fill="#9ca3af" font-family="sans-serif">22</text>
+                <text x="302" y="96" font-size="7" fill="#9ca3af" font-family="sans-serif">31</text>
+                <rect x="6" y="55" width="8" height="30" rx="3" fill="#0d9488" opacity="0.7"/>
+                <rect x="20" y="55" width="8" height="30" rx="3" fill="#0d9488" opacity="0.7"/>
+                <rect x="34" y="55" width="8" height="30" rx="3" fill="#0d9488" opacity="0.7"/>
+                <rect x="48" y="55" width="8" height="30" rx="3" fill="#0d9488" opacity="0.7"/>
+                <rect x="62" y="30" width="8" height="55" rx="3" fill="#0d9488" opacity="0.9"/>
+                <rect x="76" y="30" width="8" height="55" rx="3" fill="#0d9488" opacity="0.9"/>
+                <rect x="90" y="55" width="8" height="30" rx="3" fill="#0d9488" opacity="0.7"/>
+                <rect x="104" y="55" width="8" height="30" rx="3" fill="#0d9488" opacity="0.5"/>
+                <rect x="118" y="10" width="8" height="75" rx="3" fill="#0d9488"/>
+                <rect x="132" y="10" width="8" height="75" rx="3" fill="#0d9488"/>
+                <rect x="146" y="30" width="8" height="55" rx="3" fill="#0d9488" opacity="0.9"/>
+                <rect x="160" y="55" width="8" height="30" rx="3" fill="#0d9488" opacity="0.7"/>
+                <rect x="174" y="55" width="8" height="30" rx="3" fill="#0d9488" opacity="0.7"/>
+                <rect x="188" y="55" width="8" height="30" rx="3" fill="#0d9488" opacity="0.5"/>
+                <rect x="202" y="30" width="8" height="55" rx="3" fill="#0d9488" opacity="0.9"/>
+                <rect x="216" y="55" width="8" height="30" rx="3" fill="#0d9488" opacity="0.7"/>
+                <rect x="230" y="30" width="8" height="55" rx="3" fill="#0d9488" opacity="0.9"/>
+                <rect x="244" y="55" width="8" height="30" rx="3" fill="#0d9488" opacity="0.7"/>
+                <rect x="258" y="55" width="8" height="30" rx="3" fill="#0d9488" opacity="0.5"/>
+                <rect x="272" y="55" width="8" height="30" rx="3" fill="#f59e0b" opacity="0.9"/>
+                <rect x="286" y="55" width="8" height="30" rx="3" fill="#0d9488" opacity="0.7"/>
+                <rect x="300" y="55" width="8" height="30" rx="3" fill="#0d9488" opacity="0.5"/>
+            </svg>
+            <div class="flex items-center gap-4 mt-1">
+                <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-marca-600"></span><span class="text-[10px] text-gray-500">Plantão</span></div>
+                <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-amber-400"></span><span class="text-[10px] text-gray-500">Troca solicitada</span></div>
+            </div>
+        </div>
+
+        <!-- Próximos Plantões -->
+        <div>
+            <div class="flex items-center justify-between mb-2.5">
+                <h3 class="font-display font-semibold text-sm text-gray-800">Próximos Plantões</h3>
+                <button onclick="mostrarTela('escala-mensal')" class="text-[11px] font-semibold text-marca-700 hover:text-marca-800 transition-colors">Ver todos →</button>
+            </div>
+            <div id="lista-proximos-plantoes" class="space-y-2">
+                <div onclick="painel_inicial_detalharPlantao(this)" data-data="2025-01-18" data-unidade="UBS Jardim América" data-endereco="Rua das Flores, 420" data-horario="07:00 — 19:00" data-tipo="Plantão 12h" class="card p-3.5 rounded-xl flex items-center gap-3 cursor-pointer active:scale-[0.98] transition-all border-l-4 border-l-marca-500">
+                    <div class="w-12 h-12 rounded-xl bg-marca-50 flex flex-col items-center justify-center shrink-0">
+                        <span class="text-[10px] font-bold text-marca-600 uppercase">Sáb</span>
+                        <span class="text-lg font-display font-bold text-marca-800 leading-none">18</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-sm text-gray-900 truncate">UBS Jardim América</p>
+                        <p class="text-[11px] text-gray-500">07:00 — 19:00 · 12h</p>
+                    </div>
+                    <svg class="w-4 h-4 text-gray-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </div>
+                <div onclick="painel_inicial_detalharPlantao(this)" data-data="2025-01-20" data-unidade="Hospital Municipal" data-endereco="Av. Brasil, 1500" data-horario="19:00 — 07:00" data-tipo="Plantão Noturno" class="card p-3.5 rounded-xl flex items-center gap-3 cursor-pointer active:scale-[0.98] transition-all border-l-4 border-l-indigo-500">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-50 flex flex-col items-center justify-center shrink-0">
+                        <span class="text-[10px] font-bold text-indigo-600 uppercase">Seg</span>
+                        <span class="text-lg font-display font-bold text-indigo-800 leading-none">20</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-sm text-gray-900 truncate">Hospital Municipal</p>
+                        <p class="text-[11px] text-gray-500">19:00 — 07:00 · 12h noturno</p>
+                    </div>
+                    <svg class="w-4 h-4 text-gray-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </div>
+                <div onclick="painel_inicial_detalharPlantao(this)" data-data="2025-01-22" data-unidade="UBS Vila Esperança" data-endereco="Rua Esperança, 88" data-horario="07:00 — 19:00" data-tipo="Plantão 12h" class="card p-3.5 rounded-xl flex items-center gap-3 cursor-pointer active:scale-[0.98] transition-all border-l-4 border-l-marca-500">
+                    <div class="w-12 h-12 rounded-xl bg-marca-50 flex flex-col items-center justify-center shrink-0">
+                        <span class="text-[10px] font-bold text-marca-600 uppercase">Qua</span>
+                        <span class="text-lg font-display font-bold text-marca-800 leading-none">22</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-sm text-gray-900 truncate">UBS Vila Esperança</p>
+                        <p class="text-[11px] text-gray-500">07:00 — 19:00 · 12h</p>
+                    </div>
+                    <svg class="w-4 h-4 text-gray-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function painel_inicial_registrarEntrada() {
+        const btn = event.currentTarget;
+        btn.innerHTML = '<svg class="w-5 h-5 text-emerald-700 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg><span class="text-[11px] font-semibold text-emerald-800">Registrando...</span>';
+        setTimeout(function() {
+            btn.innerHTML = '<svg class="w-5 h-5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span class="text-[11px] font-semibold text-emerald-800">Entrada OK</span>';
+            btn.classList.remove('bg-emerald-50','border-emerald-200');
+            btn.classList.add('bg-emerald-100','border-emerald-400');
+            toast('Entrada registrada com sucesso às ' + new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}), 'ok');
+        }, 1500);
+    }
+
+    function painel_inicial_detalharPlantao(el) {
+        var data = el.getAttribute('data-data');
+        var unidade = el.getAttribute('data-unidade');
+        var endereco = el.getAttribute('data-endereco');
+        var horario = el.getAttribute('data-horario');
+        var tipo = el.getAttribute('data-tipo');
+        var dataFormatada = data.split('-').reverse().join('/');
+        var html = '<div class="space-y-4">' +
+            '<div class="flex items-center gap-2 mb-1">' +
+            '<div class="w-10 h-10 rounded-full bg-marca-100 flex items-center justify-center"><svg class="w-5 h-5 text-marca-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>' +
+            '<div><p class="font-display font-bold text-base text-gray-900">' + unidade + '</p><p class="text-xs text-gray-500">' + dataFormatada + '</p></div></div>' +
+            '<div class="bg-gray-50 rounded-xl p-3 space-y-2.5">' +
+            '<div class="flex items-center gap-2"><svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span class="text-sm text-gray-700">' + horario + '</span></div>' +
+            '<div class="flex items-center gap-2"><svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.048 1.5.158m-6 0c-.512-.05-1.024-.158-1.5-.158M7 3v4m10 0h4m-4 0v4m4-4h3a2 2 0 012 2v9a2 2 0 01-2 2h-3"/></svg><span class="text-sm text-gray-700">' + tipo + '</span></div>' +
+            '<div class="flex items-center gap-2"><svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg><span class="text-sm text-gray-700">' + endereco + '</span></div></div>' +
+            '<div class="flex gap-2 pt-1">' +
+            '<button onclick="fecharModal();mostrarTela(\'trocar-plantao\')" class="btn flex-1 py-2.5 bg-amber-500 text-white text-sm font-semibold rounded-xl active:scale-95 transition-all">Solicitar Troca</button>' +
+            '<button onclick="fecharModal();mostrarTela(\'localizacao-plantoes\')" class="btn flex-1 py-2.5 bg-marca-600 text-white text-sm font-semibold rounded-xl active:scale-95 transition-all">Ver Rota</button>' +
+            '</div></div>';
+        abrirModal(html, 'Detalhe do Plantão');
+    }
+
+    function painel_inicial_detalharPlantaoHoje() {
+        var html = '<div class="space-y-4">' +
+            '<div class="flex items-center gap-2 mb-1">' +
+            '<div class="w-10 h-10 rounded-full bg-marca-100 flex items-center justify-center"><svg class="w-5 h-5 text-marca-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>' +
+            '<div><p class="font-display font-bold text-base text-gray-900">UBS Jardim América</p><p class="text-xs text-gray-500">Hoje, 18 de Janeiro</p></div></div>' +
+            '<div class="bg-gray-50 rounded-xl p-3 space-y-2.5">' +
+            '<div class="flex items-center gap-2"><svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span class="text-sm text-gray-700">07:00 — 19:00</span></div>' +
+            '<div class="flex items-center gap-2"><svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg><span class="text-sm text-gray-700">Rua das Flores, 420 — Jardim América, SP</span></div>' +
+            '<div class="flex items-center gap-2"><svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 7H2a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-5m-4 0V5a2 2 0 012-2h2a2 2 0 012 2v2"/></svg><span class="text-sm text-gray-700">Plantão 12h · Enfermeiro responsável</span></div></div>' +
+            '<div class="flex gap-2 pt-1">' +
+            '<button onclick="fecharModal();mostrarTela(\'trocar-plantao\')" class="btn flex-1 py-2.5 bg-amber-500 text-white text-sm font-semibold rounded-xl active:scale-95 transition-all">Solicitar Troca</button>' +
+            '<button onclick="fecharModal();mostrarTela(\'localizacao-plantoes\')" class="btn flex-1 py-2.5 bg-marca-600 text-white text-sm font-semibold rounded-xl active:scale-95 transition-all">Abrir Navegação</button>' +
+            '</div></div>';
+        abrirModal(html, 'Plantão de Hoje');
+    }
+    </script>
+</section>
+
     <!-- TELAS -->
   </main>
 
